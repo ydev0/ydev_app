@@ -10,11 +10,10 @@ FROM build AS dev-envs
 RUN apt-get update \
     && apt-get install -y --no-install-recommends git
 
-RUN useradd -s /bin/bash -m vscode\
+RUN useradd -s /bin/bash -m vimuser\
     && groupadd docker\
-    && usermod -aG docker vscode
+    && usermod -aG docker vimuser
 
-# install Docker tools (cli, buildx, compose)
 COPY --from=gloursdocker/docker / /
 CMD ["java", "-jar", "target/app.jar" ]
 
