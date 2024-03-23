@@ -15,10 +15,10 @@ RUN useradd -s /bin/bash -m vimuser\
     && usermod -aG docker vimuser
 
 COPY --from=gloursdocker/docker / /
-CMD ["java", "-jar", "target/app.jar" ]
+CMD ["java", "-jar", "target/ydev-0.0.1-jar-with-dependencies.jar" ]
 
 FROM eclipse-temurin:17-jre-focal
 ARG DEPENDENCY=/workdir/server/target
 EXPOSE 8080
-COPY --from=build ${DEPENDENCY}/app.jar /app.jar
-CMD ["java", "-jar", "/app.jar"]
+COPY --from=build ${DEPENDENCY}/ydev-0.0.1-jar-with-dependencies.jar /.ydev-0.0.1-jar-with-dependenciesjar
+CMD ["java", "-jar", "/ydev-0.0.1-jar-with-dependencies.jar"]
