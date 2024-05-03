@@ -2,23 +2,43 @@ package com.ydev00.model;
 
 
 public class User {
-  private int id;
-  private String name;
+  private int id;           // user id
+  private String name;      // user real name
+  private String userName   // user userName
+  private boolean isLogged; // checker for logged user
 
-    public int getId() {
-        return id;
-    }
+  //constructor
 
-    public void setId(int id) {
-        this.id = id;
-    }
+  public User(int id, String name) {
+    this.id = id;
+    this.name = name;
 
-    public String getName() {
-        return name;
-    }
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  // methods
+  public User login() {
+    User user = new User(0, "CarlosRoot");
+
+
+    return user;
+  } 
+
+
+
+  public int getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
 
 }
