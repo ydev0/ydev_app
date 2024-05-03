@@ -1,9 +1,9 @@
-FROM --platform=$BUILDPLATFORM maven:3.9.6-eclipse-temurin-11 AS build 
+FROM --platform=$BUILDPLATFORM maven:3.9.6-eclipse-temurin-21 AS build 
 WORKDIR /workdir/server
 COPY pom.xml /workdir/server/pom.xml
 RUN mvn dependency:go-offline
 COPY src /workdir/server/src
-RUN mvn --batch-mode clean compile 
+RUN mvn --batch-mode clean compile assembly:single
 
 FROM build AS dev-envs
 
@@ -16,7 +16,6 @@ RUN useradd -s /bin/bash -m vimuser && \
 
 # install Docker tools (cli, buildx, compose)
 COPY --from=gloursdocker/docker / /
-CMD ["java", "-jar", "target/app.jar" ]
 
 ARG JAR_FILE
 COPY target/ydev-0.0.1-jar-with-dependencies.jar /target/ydev-0.0.1-jar-with-dependencies.jar
