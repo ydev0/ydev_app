@@ -6,23 +6,25 @@ import com.ydev00.model.*;
 import com.ydev00.util.*;
 
 public class Server {
+  private Router router; 
   public Server(DBServer dbServer) {
     try {
-    // init server
-    port(8080);
-    init();
+      // init server
+      port(8080);
+      init();
+      before();
 
-    validate();
-    // setup ports
-    Router.setupPorts();
+      // setup ports
+      router = new Router();
+      router.setupPorts();
 
-    System.out.println("Server connected");
+      System.out.println("Server connected");
     } catch (Exception ex) {
       System.err.println("Server could not start. Error: " + ex.getMessage());
     }
   }
 
-  public void validate() {
+  public void before() {
     // spark befores like a auth
     System.out.println("Successfully validated");
   }

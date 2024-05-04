@@ -5,7 +5,13 @@ import com.ydev00.controller.UserController;
 
 public class Router {
 
-  public static final void setupPorts() {
-    post("/login", UserController.login());
+  public Router() {
+
+  }
+
+  UserController userController = new UserController();
+
+  public final void setupPorts() {
+    post("/login", userController.login);
   }
 }

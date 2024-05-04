@@ -14,7 +14,7 @@ public class Thread {
     this.threadList = threadList;
   }
   public void setContent(String content){
-    this.id = id;
+    this.content = content;
   }
 
 }
