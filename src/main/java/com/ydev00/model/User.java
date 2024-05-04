@@ -4,10 +4,13 @@ package com.ydev00.model;
 public class User {
   private int id;           // user id
   private String name;      // user real name
-  private String userName   // user userName
+  private String userName;   // user userName
   private boolean isLogged; // checker for logged user
 
   //constructor
+  
+  public User() {
+  }
 
   public User(int id, String name) {
     this.id = id;
@@ -18,8 +21,6 @@ public class User {
   // methods
   public User login() {
     User user = new User(0, "CarlosRoot");
-
-
     return user;
   } 
 

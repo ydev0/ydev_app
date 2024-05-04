@@ -3,27 +3,27 @@ package com.ydev00.util;
 import java.io.*;
 import static spark.Spark.*;
 import com.ydev00.model.*;
+import com.ydev00.util.*;
 
 public class Server {
-
-
-  public static void initServer() {
+  public Server(DBServer dbServer) {
+    try {
+    // init server
     port(8080);
-  }
-  
-  public void stopServer() {
-    stop();
-  }
-  public void helloWorld() {
-    get("/hello/:name", (request, response) -> {
-      return "Hello: " + request.params(":name");
-    });
-  }
-  public void helloUser(User user) {
-    post("/hello", (request, responde) -> {
-      response.body(user.getName());
+    init();
 
+    validate();
+    // setup ports
+    Router.setupPorts();
 
-    });
+    System.out.println("Server connected");
+    } catch (Exception ex) {
+      System.err.println("Server could not start. Error: " + ex.getMessage());
+    }
+  }
+
+  public void validate() {
+    // spark befores like a auth
+    System.out.println("Successfully validated");
   }
 }
