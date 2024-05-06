@@ -47,9 +47,12 @@ public class UserController {
     }
 
     UserDAO userDAO = new UserDAO(dbConn);
-    user = userDAO.getById(1);
+    user = userDAO.getByEmail("email@email.com", "password");
 
     // add picture here
+    
+    System.out.println("user logged in: "+ user.getName());
+
     response.status(HttpStatus.OK_200);
 
     return route;

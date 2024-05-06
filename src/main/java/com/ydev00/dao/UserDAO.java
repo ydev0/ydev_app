@@ -20,14 +20,14 @@ public class UserDAO {
   }
 
 
-  public User getById(int id) {
+  public User getByEmail(String email, String password) {
     User user = new User();
     try {
 
-      query = "SELECT * FROM user WHERE id = ?;"; 
+      query = "SELECT * FROM user WHERE email = ?;"; 
 
       statement = dbConn.prepareStatement(query);
-      statement.setString(1, String.valueOf(id));
+      statement.setString(1, email);
       resultSet = statement.executeQuery();
 
       if(resultSet != null && resultSet.next()) {
@@ -36,6 +36,8 @@ public class UserDAO {
         user.setUsername(resultSet.getString("username"));
         user.setPassword(resultSet.getString("password"));
         user.setProfilePic(new Image(resultSet.getInt("pfp_id")));
+        if(password.equals(user.getPassword()))
+          return user;
       } 
       return null;
     } catch (Exception e) {
