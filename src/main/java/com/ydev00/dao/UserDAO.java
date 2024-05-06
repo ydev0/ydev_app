@@ -22,11 +22,12 @@ public class UserDAO {
 
   public User getById(int id) {
     User user = new User();
-
     try {
+
       query = "SELECT * FROM user WHERE id = ?;"; 
 
       statement = dbConn.prepareStatement(query);
+      statement.setString(1, String.valueOf(id));
       resultSet = statement.executeQuery();
 
       if(resultSet != null && resultSet.next()) {
@@ -34,15 +35,13 @@ public class UserDAO {
         user.setName(resultSet.getString("name"));
         user.setUsername(resultSet.getString("username"));
         user.setPassword(resultSet.getString("password"));
-        user.setProfilePic(new Image(resultSet.getInt("pfp_id");
-        return user;
+        user.setProfilePic(new Image(resultSet.getInt("pfp_id")));
       } 
       return null;
-
-
     } catch (Exception e) {
       System.err.println("User not found! " +e.getMessage());
     }
+    return user;
   }
 
   public List<User> listUsers(){

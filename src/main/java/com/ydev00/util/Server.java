@@ -2,11 +2,15 @@ package com.ydev00.util;
 
 import java.io.*;
 import static spark.Spark.*;
+import java.sql.Connection;
+
 import com.ydev00.model.*;
 import com.ydev00.util.*;
+import com.ydev00.controller.*;
+
 
 public class Server {
-  private Router router; 
+  private Connection dbConn;
   public Server(DBServer dbServer) {
     try {
       // init server
@@ -15,8 +19,13 @@ public class Server {
       before();
 
       // setup ports
-      router = new Router();
-      router.setupPorts();
+      dbConn = dbServer.getConn();
+      UserController userController = new UserController(dbConn);
+
+      redirect.get("/", "/login"); 
+      post("/login", userController.login);
+      post("/loginByURL/*", "application.json" ,userController.loginByURL);
+
 
       System.out.println("Server connected");
     } catch (Exception ex) {

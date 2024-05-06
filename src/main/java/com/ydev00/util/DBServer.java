@@ -20,4 +20,8 @@ public class DBServer {
   public void setConn(Connection conn) {
     this.conn = conn;
   }
+
+  public Connection getConn() {
+    return conn;
+  }
 }
