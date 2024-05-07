@@ -22,7 +22,8 @@ public class Server {
       dbConn = dbServer.getConn();
       UserController userController = new UserController(dbConn);
 
-      redirect.get("/", "/login"); 
+      // routes 
+      redirect.get("/", "/login"); // change to auth
       post("/login", userController.login);
       post("/loginByURL/*", "application.json" ,userController.loginByURL);
 

@@ -19,6 +19,7 @@ public class UserController {
 
   public UserController(Connection dbConn) {
     this.dbConn = dbConn;
+    this.gson = new Gson();
   } 
 
   public Route loginByURL = (request, response) -> {
@@ -41,6 +42,9 @@ public class UserController {
     Route route = null;
     user = gson.fromJson(request.body(), User.class); 
 
+    
+
+
     if (user == null) {
       response.status(HttpStatus.FAILED_DEPENDENCY_424);
       return gson.toJson(new Exception("ERROR" + "Could not login user"));
@@ -54,7 +58,9 @@ public class UserController {
     System.out.println("user logged in: "+ user.getName());
 
     response.status(HttpStatus.OK_200);
+    
+    String resp = "carlos"; //WARN change this
 
-    return route;
+    return resp;
   };
 }

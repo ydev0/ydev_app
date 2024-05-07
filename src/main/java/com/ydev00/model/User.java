@@ -11,12 +11,9 @@ public class User {
 
   @SerializedName("userName")
   private String userName;
-  
+
   @SerializedName("password")
   private String password; 
-
-  @SerializedName("isLogged")
-  private boolean isLogged; 
 
   @SerializedName("profilePic")
   private Image profilePic;
@@ -34,9 +31,8 @@ public class User {
   }
 
   // methods
-  public User createUser() {
+  public User createGenericUser() {
     User user = new User(0, "Carlos", "CarlosRoot", "password", null);
-    user.isLogged = true;
     return user;
   } 
 
@@ -72,5 +68,4 @@ public class User {
   public String getPassword() {
     return password;
   }
-
 }
