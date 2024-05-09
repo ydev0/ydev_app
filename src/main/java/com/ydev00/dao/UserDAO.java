@@ -30,16 +30,22 @@ public class UserDAO {
       statement.setString(1, email);
       resultSet = statement.executeQuery();
 
+      if (resultSet.getString("password") != password) {
+        return null;
+      }
+
       if(resultSet != null && resultSet.next()) {
         user.setId(resultSet.getInt("id"));
         user.setName(resultSet.getString("name"));
         user.setUsername(resultSet.getString("username"));
         user.setPassword(resultSet.getString("password"));
-        user.setProfilePic(new Image(resultSet.getInt("pfp_id")));
-        if(password.equals(user.getPassword()))
-          return user;
       } 
-      return null;
+      
+      ImageDAO imageDAO = new ImageDAO(dbConn);
+      Image image = imageDAO.getById();
+      
+      user.setProfilePic(image);
+
     } catch (Exception e) {
       System.err.println("User not found! " +e.getMessage());
     }

@@ -3,22 +3,18 @@ package com.ydev00.model;
 import com.google.gson.annotations.SerializedName;
 
 public class User {
-  @SerializedName("id")
   private int id;       
 
-  @SerializedName("name")
   private String name;   
 
-  @SerializedName("userName")
   private String userName;
 
-  @SerializedName("password")
   private String password; 
 
-  @SerializedName("profilePic")
   private Image profilePic;
 
-  //constructors
+  private boolean isLogged;
+
   public User() {
   }
 
@@ -30,13 +26,11 @@ public class User {
     this.profilePic = profilePic;
   }
 
-  // methods
   public User createGenericUser() {
     User user = new User(0, "Carlos", "CarlosRoot", "password", null);
     return user;
   } 
 
-  // getters and setters
   public void setId(int id) {
     this.id = id;
   }
