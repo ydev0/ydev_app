@@ -42,24 +42,35 @@ public class UserController {
 
     response.status(HttpStatus.OK_200);
 
-    String resp = "{\n\"user\": "
+    /*String resp = "{\n\"user\": "
     + gson.toJson(user) +"\n";
-
-    return resp;
+    return resp; */
+    return gson.toJson(user);
   };
 
   public Route signup = (request, response) -> {
     response.type("application.json");
 
-    User user = gson.fromJson(request.body(), User.class);
-
-
+    user = gson.fromJson(request.body(), User.class);
 
     return "carlos";
   };
 
   public Route getUser = (request, response) -> {
+    response.type("application.json");
 
-    return "carlos";
+    UserDAO userDAO = new UserDAO(dbConn);
+
+    user = userDAO.getUserByUsername(request.params("username"));
+
+    if(user == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "Not logging in");
+      return gson.toJson(message);
+    }
+
+    user.setAuth(true);
+    response.status(HttpStatus.OK_200);
+    return gson.toJson(user); 
   };
 }

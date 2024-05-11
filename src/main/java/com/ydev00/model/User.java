@@ -4,16 +4,12 @@ import com.google.gson.annotations.SerializedName;
 
 public class User {
   private int id;       
-
   private String name;   
-
-  private String userName;
-
+  private String username;
   private String password; 
-
   private Image profilePic;
 
-  private boolean isLogged;
+  private boolean auth;
 
   public User() {
   }
@@ -21,7 +17,7 @@ public class User {
   public User(int id, String name, String userName, String password, Image profilePic) {
     this.id = id;
     this.name = name;
-    this.userName = userName;
+    this.username = userName;
     this.password = password;
     this.profilePic = profilePic;
   }
@@ -40,7 +36,7 @@ public class User {
   }
 
   public void setUsername(String userName) {
-    this.userName = userName;
+    this.username = userName;
   }
 
   public void setPassword(String password) {
@@ -49,6 +45,10 @@ public class User {
 
   public void setProfilePic(Image pfp) {
     this.profilePic = pfp;
+  }
+
+  public void setAuth(boolean auth) {
+    this.auth = auth;
   }
 
   public int getId() {

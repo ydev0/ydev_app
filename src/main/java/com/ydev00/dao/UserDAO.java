@@ -1,6 +1,7 @@
 package com.ydev00.dao;
 
 import com.ydev00.model.User;
+import com.ydev00.dao.ImageDAO;
 import com.ydev00.model.Image;
 
 import java.sql.Connection;
@@ -42,8 +43,8 @@ public class UserDAO {
       } 
       
       ImageDAO imageDAO = new ImageDAO(dbConn);
-      Image image = imageDAO.getById();
-      
+      Image image = imageDAO.getById(resultSet.getInt("pfp_id"));
+
       user.setProfilePic(image);
 
     } catch (Exception e) {
@@ -52,8 +53,35 @@ public class UserDAO {
     return user;
   }
 
+  public User getUserByUsername(String username){
+    User user = new User();
+    try {
+      query = "SELECT * FROM user WHERE username= ?;"; 
+
+      statement = dbConn.prepareStatement(query);
+      statement.setString(1, username);
+      resultSet = statement.executeQuery();
+
+      if(resultSet != null && resultSet.next()) {
+        user.setId(resultSet.getInt("id"));
+        user.setName(resultSet.getString("name"));
+        user.setUsername(resultSet.getString("username"));
+        ImageDAO imageDAO = new ImageDAO(dbConn);
+        Image image = imageDAO.getById(resultSet.getInt("pfp_id"));
+
+        user.setProfilePic(image);
+        return user;
+      } 
+
+    }
+    catch (Exception ex) {
+      System.err.println("User not found!" + ex.getMessage());
+    }
+    return null; 
+  }
+
   public List<User> listUsers(){
-    List<User> users = new ArrayList<>();
+    List<User> users = new ArrayList<User>();
 
     return users;
   }
