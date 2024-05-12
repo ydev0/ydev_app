@@ -20,6 +20,24 @@ public class UserDAO {
     this.dbConn = dbConn;
   }
 
+  public User signup(User user) {
+    try {
+      query = "insert into user (email, password, pfp_id) values (?, ?, ?, ?)";
+
+      statement = dbConn.prepareStatement(query);
+      statement.setString(1, user.getEmail());
+
+      resultSet = statement.executeQuery();
+
+      
+
+    } catch (Exception ex) {
+      System.err.println(ex.getMessage());
+    }  
+
+    return user;
+  }
+
 
   public User getByEmail(String email, String password) {
     User user = new User();

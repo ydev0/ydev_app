@@ -16,6 +16,7 @@ public class UserController {
   private User user;
   private Connection dbConn;
   private Gson gson;
+  private UserDAO userDAO;
 
 
   public UserController() {}
@@ -23,43 +24,44 @@ public class UserController {
   public UserController(Connection dbConn) {
     this.dbConn = dbConn;
     this.gson = new Gson();
+    this.userDAO = new UserDAO(dbConn);
   } 
 
 
   public Route login = (request, response) -> {
     response.type("application.json");
 
-    User user = gson.fromJson(request.body(), User.class);
+    if (user == null) 
+      return null;
+
+    user = userDAO.getByEmail(gson.fromJson("email", String.class), gson.fromJson("password", String.class));
 
     if (user == null) {
       response.status(HttpStatus.FAILED_DEPENDENCY_424);
       Message message = new Message("Error", "Not logging in");
-      return gson.toJson(message);
+      return gson.toJson(message, Message.class);
     }
-
-    UserDAO userDAO = new UserDAO(dbConn);
-
 
     response.status(HttpStatus.OK_200);
 
-    /*String resp = "{\n\"user\": "
-    + gson.toJson(user) +"\n";
-    return resp; */
-    return gson.toJson(user);
+    String resp = "{\n\"user\": "
+    + gson.toJson(user) + "\n";
+    return resp; 
   };
 
   public Route signup = (request, response) -> {
     response.type("application.json");
 
     user = gson.fromJson(request.body(), User.class);
+    
 
-    return "carlos";
+
+
+    return gson.toJson(userDAO.signup(user));
   };
 
   public Route getUser = (request, response) -> {
     response.type("application.json");
-
-    UserDAO userDAO = new UserDAO(dbConn);
 
     user = userDAO.getUserByUsername(request.params("username"));
 
