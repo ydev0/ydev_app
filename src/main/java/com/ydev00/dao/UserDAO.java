@@ -22,14 +22,14 @@ public class UserDAO {
 
   public User signup(User user) {
     try {
-      query = "insert into user (email, password, pfp_id) values (?, ?, ?, ?)";
+      query = "insert into user (name, username, email, password, pfp_id) values (?, ?, ?, ?)";
 
       statement = dbConn.prepareStatement(query);
       statement.setString(1, user.getEmail());
 
       resultSet = statement.executeQuery();
 
-      
+
 
     } catch (Exception ex) {
       System.err.println(ex.getMessage());
@@ -58,12 +58,9 @@ public class UserDAO {
         user.setName(resultSet.getString("name"));
         user.setUsername(resultSet.getString("username"));
         user.setPassword(resultSet.getString("password"));
+        user.setProfilePic(new Image(resultSet.getInt("pfp_id")));
       } 
-      
-      ImageDAO imageDAO = new ImageDAO(dbConn);
-      Image image = imageDAO.getById(resultSet.getInt("pfp_id"));
 
-      user.setProfilePic(image);
 
     } catch (Exception e) {
       System.err.println("User not found! " +e.getMessage());
@@ -80,17 +77,20 @@ public class UserDAO {
       statement.setString(1, username);
       resultSet = statement.executeQuery();
 
-      if(resultSet != null && resultSet.next()) {
+      if(resultSet.next()) {
         user.setId(resultSet.getInt("id"));
-        user.setName(resultSet.getString("name"));
         user.setUsername(resultSet.getString("username"));
+        user.setName(resultSet.getString("name"));
+        user.setEmail(resultSet.getString("email"));
+        user.setPassword("");
+
         ImageDAO imageDAO = new ImageDAO(dbConn);
         Image image = imageDAO.getById(resultSet.getInt("pfp_id"));
 
-        user.setProfilePic(image);
+
+        user.setProfilePic(null);
         return user;
       } 
-
     }
     catch (Exception ex) {
       System.err.println("User not found!" + ex.getMessage());

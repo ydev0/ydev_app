@@ -7,6 +7,7 @@ import java.sql.Connection;
 
 import com.ydev00.model.User;
 import com.ydev00.dao.UserDAO;
+import com.ydev00.dao.ImageDAO;
 import com.ydev00.util.Message;
 
 import org.eclipse.jetty.http.HttpStatus;
@@ -42,6 +43,10 @@ public class UserController {
       return gson.toJson(message, Message.class);
     }
 
+    ImageDAO imageDAO = new ImageDAO(dbConn);
+
+    user.setProfilePic(imageDAO.getById(user.getProfilePic().getId()));
+
     response.status(HttpStatus.OK_200);
 
     String resp = "{\n\"user\": "
@@ -53,14 +58,11 @@ public class UserController {
     response.type("application.json");
 
     user = gson.fromJson(request.body(), User.class);
-    
-
-
 
     return gson.toJson(userDAO.signup(user));
   };
 
-  public Route getUser = (request, response) -> {
+  public Route getUserByUsername = (request, response) -> {
     response.type("application.json");
 
     user = userDAO.getUserByUsername(request.params("username"));
@@ -68,11 +70,11 @@ public class UserController {
     if(user == null) {
       response.status(HttpStatus.FAILED_DEPENDENCY_424);
       Message message = new Message("Error", "Not logging in");
-      return gson.toJson(message);
+      return gson.toJson(message, Message.class);
     }
 
-    user.setAuth(true);
     response.status(HttpStatus.OK_200);
-    return gson.toJson(user); 
+    user.setAuth(true);
+    return gson.toJson(user, User.class); 
   };
 }

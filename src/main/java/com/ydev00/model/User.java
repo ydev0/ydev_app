@@ -3,13 +3,25 @@ package com.ydev00.model;
 import com.google.gson.annotations.SerializedName;
 
 public class User {
+  @SerializedName("id")
   private int id;       
+
+  @SerializedName("name")
   private String name;   
+  
+  @SerializedName("username")
   private String username;
+
+  @SerializedName("email")
   private String email;
+
+  @SerializedName("password")
   private String password; 
+
+  @SerializedName("profilePic")
   private Image profilePic;
 
+  @SerializedName("auth")
   private boolean auth;
 
   public User() {
@@ -22,12 +34,9 @@ public class User {
     this.email = email;
     this.password = password;
     this.profilePic = profilePic;
+    this.auth = false;
   }
 
-  public User createGenericUser() {
-    User user = new User(0, "Carlos", "CarlosRoot", "carlos@gmail.com", "password", null);
-    return user;
-  } 
 
   public void setId(int id) {
     this.id = id;
@@ -44,6 +53,10 @@ public class User {
   public void setPassword(String password) {
     this.password = password;
   }
+  
+  public void setEmail(String email) {
+    this.email = email;
+  }
 
   public void setProfilePic(Image pfp) {
     this.profilePic = pfp;
@@ -57,6 +70,10 @@ public class User {
     return id;
   }
 
+  public Image getProfilePic() {
+    return profilePic;
+  }
+
   public String getName() {
     return name;
   }
@@ -68,4 +85,15 @@ public class User {
   public String getPassword() {
     return password;
   }
-}
+
+  public String toString() {
+    return "User{" +
+    "id=" + id + 
+    ", username='" + username + '\'' +
+    ", name='" + name + '\'' +
+    ", email='" + email + '\'' +
+    ", password='" + password + '\'' +
+    ", pfp= '" +profilePic + '\'' +
+    ", auth= '" +auth+ '\'' +
+    '}';
+  }}

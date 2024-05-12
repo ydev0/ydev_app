@@ -7,8 +7,7 @@ public class DBServer {
 
   public DBServer() {
     try {
-      conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/test?" +
-        "user=root&password=password");
+      conn = DriverManager.getConnection("jdbc:mysql://localhost/ydev_db?" + "user=root&password=password");
     } catch (SQLException ex) {
       // handle any errors
       System.out.println("SQLException: " + ex.getMessage());

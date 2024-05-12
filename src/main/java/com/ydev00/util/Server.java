@@ -20,17 +20,24 @@ public class Server {
       init();
 
       dbConn = dbServer.getConn();
+      System.out.println(dbConn.getMetaData());
 
       UserController userController = new UserController(dbConn);
 
       // routes 
-      redirect.get("/", "/login"); // change to auth
+      redirect.get("/", "/home"); // change to auth
       path("user", () -> {
         post("/login", userController.login);
-        get("/:username", userController.getUser);
+        get("/:username", userController.getUserByUsername);
       });
 
-        System.out.println("Server connected");
+      get("/home", (request, response) -> {
+        return "home";
+      });
+
+
+      if(dbConn != null) 
+        System.out.println("[Server Connected]");
     } catch (Exception ex) {
       System.err.println("Server could not start. Error: " + ex.getMessage());
     }

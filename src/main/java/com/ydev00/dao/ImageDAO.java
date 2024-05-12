@@ -4,16 +4,37 @@ import com.ydev00.model.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class ImageDAO {
   private Connection dbConn;
+  private String query;
+  private PreparedStatement statement ;
+  private ResultSet resultSet;
 
   public ImageDAO(Connection dbConn) {
     this.dbConn = dbConn;
   }
+
   public Image getById(int id){
-    return new Image();
+    Image image = new Image();
+    try {
+      query = "select * from image where id = ?";
+      
+      statement = dbConn.prepareStatement(query);
+      statement.setInt(1, id);
+
+      resultSet = statement.executeQuery();
+
+      if(resultSet.next()) {
+        image.setId(resultSet.getInt("id"));
+        image.setImage((resultSet.getBlob("image")).getBinaryStream());
+      } 
+
+      return image;
+    } catch (Exception ex) {
+      System.err.println("Image not found: "+ex.getMessage());
+    }
+    return null;
   }
-
-
 } 
