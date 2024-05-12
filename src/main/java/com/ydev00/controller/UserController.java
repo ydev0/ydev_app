@@ -6,6 +6,7 @@ import static spark.Spark.*;
 import java.sql.Connection;
 
 import com.ydev00.model.User;
+import com.ydev00.model.Image;
 import com.ydev00.dao.UserDAO;
 import com.ydev00.dao.ImageDAO;
 import com.ydev00.util.Message;
@@ -34,6 +35,15 @@ public class UserController {
 
     if (user == null) 
       return null;
+
+    user.setName(gson.fromJson("name", String.class));
+    
+    System.out.println("CARLOS:" + gson.fromJson("name", String.class));
+    user.setUsername(gson.fromJson("username", String.class));
+    user.setEmail(gson.fromJson("email", String.class));
+    
+    user.setProfilePic(new Image(Integer.valueOf(gson.fromJson("pfp_id", String.class))));
+    user.setName(gson.fromJson("name", String.class));
 
     user = userDAO.getByEmail(gson.fromJson("email", String.class), gson.fromJson("password", String.class));
 

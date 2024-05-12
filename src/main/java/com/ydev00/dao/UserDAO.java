@@ -22,11 +22,15 @@ public class UserDAO {
 
   public User signup(User user) {
     try {
-      query = "insert into user (name, username, email, password, pfp_id) values (?, ?, ?, ?)";
+      query = "insert into user (id, name, username, email, password, pfp_id) values (?, ?, ?, ?, ?, ?)";
 
       statement = dbConn.prepareStatement(query);
-      statement.setString(1, user.getEmail());
-
+      statement.setInt(1, user.getId());
+      statement.setString(2, user.getName());
+      statement.setString(3, user.getUsername());
+      statement.setString(4, user.getEmail());
+      statement.setString(5, user.getPassword());
+      statement.setInt(6, user.getProfilePic().getId());
       resultSet = statement.executeQuery();
 
 
