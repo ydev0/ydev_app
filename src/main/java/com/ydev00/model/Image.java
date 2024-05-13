@@ -8,15 +8,14 @@ public class Image {
   private int id;
 
   @SerializedName("image")
-  private InputStream image;
-  // TODO set image  
+  private Byte[] image;
 
   public Image() {}
 
   public Image(int id) {
     this.id = id;
   }
-  public Image(int id, InputStream image) {
+  public Image(int id, Byte[] image) {
     this.id = id;
     this.image = image;
   }
@@ -29,7 +28,7 @@ public class Image {
     this.id = id;
   }
 
-  public void setImage(InputStream image) {
+  public void setImage(Byte[] image) {
     this.image = image;
   }
 }
