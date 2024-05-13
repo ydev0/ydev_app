@@ -22,14 +22,28 @@ public class UserDAO {
 
   public User signup(User user) {
     try {
-      query = "insert into user ( name, username, email, password, pfp_id) values (?, ?, ?, ?, ?, ?) returning id;";
+      query = "insert into user (name, username, email, password, root, pfp_id) values (?, ?, ?, ?, ?, ?, ?) returning id;";
 
       statement = dbConn.prepareStatement(query);
       statement.setString(1, user.getName());
       statement.setString(2, user.getUsername());
       statement.setString(3, user.getEmail());
       statement.setString(4, user.getPassword());
-      statement.setInt(5, user.getProfilePic().getId());
+      statement.setInt(5, 0);
+      
+      if(user.getProfilePic() == null) {
+        ImageDAO imageDAO = new ImageDAO(dbConn);
+        Image image = imageDAO.getById(0);
+        user.setProfilePic(image);
+      }
+
+      if(user.getProfilePic().getImage() == null) {
+        ImageDAO imageDAO = new ImageDAO(dbConn);
+        Image image = imageDAO.getById(user.getProfilePic().getId());
+        user.setProfilePic(image);
+      }
+
+      statement.setInt(6, user.getProfilePic().getId());
       resultSet = statement.executeQuery();
 
       if (resultSet.next()) {
@@ -50,7 +64,6 @@ public class UserDAO {
   public User getByEmail(String email, String password) {
     User user = new User();
     try {
-
       query = "SELECT * FROM user WHERE email = ?;"; 
 
       statement = dbConn.prepareStatement(query);
@@ -61,7 +74,7 @@ public class UserDAO {
         return null;
       }
 
-      if(resultSet != null && resultSet.next()) {
+      if(resultSet.next()) {
         user.setId(resultSet.getInt("id"));
         user.setName(resultSet.getString("name"));
         user.setUsername(resultSet.getString("username"));

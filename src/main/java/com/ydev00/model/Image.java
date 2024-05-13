@@ -23,6 +23,9 @@ public class Image {
   public int getId() {
     return id;
   }
+  public Byte[] getImage() {
+    return image;
+  }
 
   public void setId(int id) { 
     this.id = id;
