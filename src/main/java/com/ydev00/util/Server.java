@@ -25,13 +25,14 @@ public class Server {
       UserController userController = new UserController(dbConn);
 
       // routes 
-      redirect.get("/", "/home"); // change to auth
+      redirect.get("/", "/home"); 
       path("user", () -> {
         post("/login", userController.login);
         get("/:username", userController.getUserByUsername);
       });
 
       get("/home", (request, response) -> {
+        if()
         return "home";
       });
 
@@ -42,6 +43,4 @@ public class Server {
       System.err.println("Server could not start. Error: " + ex.getMessage());
     }
   }
-
-
 }
