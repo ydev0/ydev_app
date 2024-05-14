@@ -14,3 +14,5 @@ you can check if it is working by running `docker compose ps`
 if you want to test this locally, run 
 
 `mvn --batch-mode clean compile assembly:single`
+
+`java -jar target/ydev-0.0.1-jar-with-dependencies.jar`

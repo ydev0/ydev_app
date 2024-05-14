@@ -5,8 +5,9 @@ import com.ydev00.model.Image;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.List;
 
-public class ImageDAO {
+public class ImageDAO implements DAO{
   private Connection dbConn;
   private String query;
   private PreparedStatement statement ;
@@ -16,28 +17,38 @@ public class ImageDAO {
     this.dbConn = dbConn;
   }
 
-  public Image getById(int id){
-    Image image = new Image();
+  @Override
+  public Image create(Object obj) {
+    Image image = (Image) obj;
+
+    return image;
+  }
+
+  @Override
+  public Image get(Object obj){
+    Image image = (Image) obj;
     try {
       query = "select * from image where id = ?";
 
       statement = dbConn.prepareStatement(query);
-      statement.setInt(1, id);
+      statement.setInt(1, image.getId());
 
       resultSet = statement.executeQuery();
 
       if(resultSet.next()) {
-        image.setId(resultSet.getInt("id"));
-        //  image.setImage(resultSet.getBlob("image")); 
-        image.setImage(null);
-        // TODO set image
-      } 
-
+        image.setImage(null); // convert blob to file -> resultSet.getBlob("image")
+      }
       return image;
-
     } catch (Exception ex) {
       System.err.println("Image not found: "+ex.getMessage());
     }
     return null;
   }
+
+  @Override
+  public List<?> getAll() {
+    return List.of();
+  }
+
+
 } 

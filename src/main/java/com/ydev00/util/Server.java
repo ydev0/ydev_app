@@ -23,17 +23,25 @@ public class Server {
       System.out.println(dbConn.getMetaData());
 
       UserController userController = new UserController(dbConn);
+      ThreadController threadController = new ThreadController(dbConn);
+      ArticleController articleController = new ArticleController(dbConn);
 
       // routes 
       redirect.get("/", "/home"); 
-      path("user", () -> {
+      path("/user", () -> {
         post("/login", userController.login);
-        get("/:username", userController.getUserByUsername);
+        get("/:username", "application.json",userController.getByUsername);
+
+        get("/:username/t/:id", "application.json",threadController.getThreadsByUser);
       });
 
-      get("/home", (request, response) -> {
-        if()
-        return "home";
+      path("/home", () -> {
+        get("/", "application.json" , threadController.loadFeed);
+        get("/t/:id", "application.json", threadController.loadThread);
+
+        post("/t/new", "application.json", threadController.create);
+
+        post("/a/new", "application.json", articleController.create);
       });
 
 

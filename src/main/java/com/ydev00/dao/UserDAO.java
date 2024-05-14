@@ -8,9 +8,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import java.sql.SQLException;
 import java.util.*;
 
-public class UserDAO {
+public class UserDAO implements DAO{
   private Connection dbConn;
   private String query;
   private PreparedStatement statement ;
@@ -20,7 +21,8 @@ public class UserDAO {
     this.dbConn = dbConn;
   }
 
-  public User signup(User user) {
+  public User create(Object obj) {
+    User user = (User) obj;
     try {
       query = "insert into user (name, username, email, password, root, pfp_id) values (?, ?, ?, ?, ?, ?, ?) returning id;";
 
@@ -30,18 +32,19 @@ public class UserDAO {
       statement.setString(3, user.getEmail());
       statement.setString(4, user.getPassword());
       statement.setInt(5, 0);
-      
+
+      Image image = null;
+      ImageDAO imageDAO = new ImageDAO(dbConn);
+
       if(user.getProfilePic() == null) {
-        ImageDAO imageDAO = new ImageDAO(dbConn);
-        Image image = imageDAO.getById(0);
+         image = (Image)imageDAO.get(new Image(0));
+          user.setProfilePic(image);
+      }
+      if(user.getProfilePic().getImage() == null) {
+        image = (Image)imageDAO.get(user.getProfilePic());
         user.setProfilePic(image);
       }
 
-      if(user.getProfilePic().getImage() == null) {
-        ImageDAO imageDAO = new ImageDAO(dbConn);
-        Image image = imageDAO.getById(user.getProfilePic().getId());
-        user.setProfilePic(image);
-      }
 
       statement.setInt(6, user.getProfilePic().getId());
       resultSet = statement.executeQuery();
@@ -60,17 +63,22 @@ public class UserDAO {
     return user;
   }
 
+  @Override
+  public List<?> getAll() {
+    return List.of();
+  }
 
-  public User getByEmail(String email, String password) {
-    User user = new User();
+  @Override
+  public Object get(Object obj) throws SQLException {
+    User user = (User) obj;
     try {
       query = "SELECT * FROM user WHERE email = ?;"; 
 
       statement = dbConn.prepareStatement(query);
-      statement.setString(1, email);
+      statement.setString(1, user.getEmail());
       resultSet = statement.executeQuery();
 
-      if (resultSet.getString("password") != password) {
+      if (!resultSet.getString("password").equals(user.getPassword())) {
         return null;
       }
 
@@ -79,17 +87,21 @@ public class UserDAO {
         user.setName(resultSet.getString("name"));
         user.setUsername(resultSet.getString("username"));
         user.setPassword(resultSet.getString("password"));
-        user.setProfilePic(new Image(resultSet.getInt("pfp_id")));
+
+        ImageDAO imageDAO = new ImageDAO(dbConn);
+        Image image = imageDAO.get(resultSet.getInt("pfp_id"));
+
+        user.setProfilePic(image);
       } 
-
-
     } catch (Exception e) {
       System.err.println("User not found! " +e.getMessage());
     }
+    statement.close();
+    resultSet.close();
     return user;
   }
 
-  public User getUserByUsername(String username){
+  public User getByUsername(String username) throws SQLException {
     User user = new User();
     try {
       query = "SELECT * FROM user WHERE username= ?;"; 
@@ -106,7 +118,7 @@ public class UserDAO {
         user.setPassword("");
 
         ImageDAO imageDAO = new ImageDAO(dbConn);
-        Image image = imageDAO.getById(resultSet.getInt("pfp_id"));
+        Image image = (Image)imageDAO.get(new Image(resultSet.getInt("pfp_id")));
 
         user.setProfilePic(image);
         return user;
@@ -115,6 +127,8 @@ public class UserDAO {
     catch (Exception ex) {
       System.err.println("User not found!" + ex.getMessage());
     }
+    statement.close();
+    resultSet.close();
     return null; 
   }
 

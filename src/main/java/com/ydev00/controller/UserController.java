@@ -33,19 +33,19 @@ public class UserController {
   public Route login = (request, response) -> {
     response.type("application.json");
 
-    if (user == null) 
+    if (user == null)
       return null;
 
     user.setName(gson.fromJson("name", String.class));
-    
+
     System.out.println("CARLOS:" + gson.fromJson("name", String.class));
     user.setUsername(gson.fromJson("username", String.class));
     user.setEmail(gson.fromJson("email", String.class));
-    
-    user.setProfilePic(new Image(Integer.valueOf(gson.fromJson("pfp_id", String.class))));
+    user.setProfilePic(new Image(Integer.parseInt(gson.fromJson("pfp_id", String.class))));
     user.setName(gson.fromJson("name", String.class));
+    user.setPassword(gson.fromJson("password", String.class));
 
-    user = userDAO.getByEmail(gson.fromJson("email", String.class), gson.fromJson("password", String.class));
+    user = (User)userDAO.get(user);
 
     if (user == null) {
       response.status(HttpStatus.FAILED_DEPENDENCY_424);
@@ -55,27 +55,23 @@ public class UserController {
 
     ImageDAO imageDAO = new ImageDAO(dbConn);
 
-    user.setProfilePic(imageDAO.getById(user.getProfilePic().getId()));
+    user.setProfilePic(imageDAO.get(user.getProfilePic()));
 
     response.status(HttpStatus.OK_200);
-
-    String resp = "{\n\"user\": "
-    + gson.toJson(user) + "\n";
-    return resp; 
-  };
+    return "{\n\"user\": " + gson.toJson(user) + "\n";};
 
   public Route signup = (request, response) -> {
     response.type("application.json");
 
     user = gson.fromJson(request.body(), User.class);
 
-    return gson.toJson(userDAO.signup(user));
+    return gson.toJson(userDAO.create(user));
   };
 
-  public Route getUserByUsername = (request, response) -> {
+  public Route getByUsername = (request, response) -> {
     response.type("application.json");
 
-    user = userDAO.getUserByUsername(request.params("username"));
+    user = userDAO.getByUsername(request.params("username"));
 
     if(user == null) {
       response.status(HttpStatus.FAILED_DEPENDENCY_424);
@@ -87,4 +83,6 @@ public class UserController {
     user.setAuth(true);
     return gson.toJson(user, User.class); 
   };
+
+
 }
