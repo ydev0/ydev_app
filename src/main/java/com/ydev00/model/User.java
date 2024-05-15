@@ -21,8 +21,6 @@ public class User {
   @SerializedName("profilePic")
   private Image profilePic;
 
-
-
   @SerializedName("auth")
   private boolean auth;
 

@@ -27,8 +27,10 @@ public class Server {
       ArticleController articleController = new ArticleController(dbConn);
       ModUserController modUserController = new ModUserController(dbConn);
 
-      // routes 
-      redirect.get("/", "/home");
+      // routes
+      redirect.get("/", "/home/");
+      redirect.get("/home", "/home/");
+
       path("/user", () -> {
         post("/login", userController.login);
         get("/:username", "application.json",userController.getByUsername);

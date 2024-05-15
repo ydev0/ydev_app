@@ -33,12 +33,13 @@ public class UserController {
   public Route login = (request, response) -> {
     response.type("application.json");
 
-    if (user == null)
-      return null;
+    User user =  gson.fromJson(request.body(), User.class);
 
-    System.out.println("CARLOS:" + gson.fromJson("name", String.class));
-    user = gson.fromJson(request.body(), User.class);
-    System.out.println("CARLINHOs:" + user.getUsername() + " " + user.getPassword());
+    if (user == null || user.getEmail() == null || user.getPassword() == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "Wrong input");
+      return gson.toJson(message, Message.class);
+    }
 
     user = (User) userDAO.get(user);
 
@@ -49,12 +50,12 @@ public class UserController {
     }
 
     ImageDAO imageDAO = new ImageDAO(dbConn);
-
-    user.setProfilePic(imageDAO.get(user.getProfilePic()));
+    Image image = imageDAO.get(user.getProfilePic());
+    user.setProfilePic(image);
 
     response.status(HttpStatus.OK_200);
     return gson.toJson(user, User.class);
-  }
+  };
 
   public Route signup = (request, response) -> {
     response.type("application.json");
@@ -67,15 +68,16 @@ public class UserController {
       return gson.toJson(message, Message.class);
     }
 
-    response.status(HttpStatus.OK_200);
+    userDAO.create(user);
 
+    response.status(HttpStatus.OK_200);
     return gson.toJson(userDAO.create(user));
   };
 
   public Route getByUsername = (request, response) -> {
     response.type("application.json");
 
-    user = (User)userDAO.getByUsername(request.params("username"));
+    user = (User) userDAO.getByUsername(request.params("username"));
 
     if(user == null) {
       response.status(HttpStatus.FAILED_DEPENDENCY_424);
@@ -83,8 +85,11 @@ public class UserController {
       return gson.toJson(message, Message.class);
     }
 
+    ImageDAO imageDAO = new ImageDAO(dbConn);
+    Image image = imageDAO.get(user.getProfilePic());
+    user.setProfilePic(image);
+
     response.status(HttpStatus.OK_200);
-    user.setAuth(true);
-    return gson.toJson(user, User.class); 
+    return gson.toJson(user, User.class);
   };
 }

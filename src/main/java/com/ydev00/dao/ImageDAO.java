@@ -1,7 +1,9 @@
 package com.ydev00.dao;
 
+import java.sql.Blob;
 import com.ydev00.model.Image;
 
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -41,15 +43,18 @@ public class ImageDAO implements DAO{
     Image image = (Image) obj;
     try {
       query = "select * from image where id = ?";
-
       statement = dbConn.prepareStatement(query);
       statement.setInt(1, image.getId());
-
       resultSet = statement.executeQuery();
 
       if(resultSet.next()) {
-        image.setImage(resultSet.getBlob("image").getBinaryStream());
+        image.setId(resultSet.getInt("id"));
+        image.setType(resultSet.getString("type"));
+        image.setImage(resultSet.getBlob("image"));
+        image.setWidth(resultSet.getInt("width"));
+        image.setHeight(resultSet.getInt("height"));
       }
+
       return image;
     } catch (Exception ex) {
       System.err.println("Image not found: "+ex.getMessage());
@@ -68,7 +73,10 @@ public class ImageDAO implements DAO{
       while(resultSet.next()) {
         Image image = new Image();
         image.setId(resultSet.getInt("id"));
-        image.setImage(resultSet.getBlob("image").getBinaryStream());
+        image.setType(resultSet.getString("type"));
+        image.setImage(resultSet.getBlob("image"));
+        image.setWidth(resultSet.getInt("width"));
+        image.setHeight(resultSet.getInt("height"));
         images.add(image);
       }
     }

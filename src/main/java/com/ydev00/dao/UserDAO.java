@@ -33,8 +33,8 @@ public class UserDAO implements DAO{
       statement.setString(4, user.getPassword());
       statement.setInt(5, 0);
 
-      Image image = null;
       ImageDAO imageDAO = new ImageDAO(dbConn);
+      Image image = new Image();
 
       if(user.getProfilePic() == null) {
          image = (Image)imageDAO.get(new Image(0));
@@ -77,33 +77,29 @@ public class UserDAO implements DAO{
       statement.setString(1, user.getEmail());
       resultSet = statement.executeQuery();
 
-      if (!resultSet.getString("password").equals(user.getPassword())) {
-        return null;
-      }
-
       if(resultSet.next()) {
+        if (!(resultSet.getString("password").equals(user.getPassword()))) {
+          System.out.println("Password does not match!");
+          return null;
+        }
+
         user.setId(resultSet.getInt("id"));
         user.setName(resultSet.getString("name"));
         user.setUsername(resultSet.getString("username"));
-        user.setPassword(resultSet.getString("password"));
-
-        ImageDAO imageDAO = new ImageDAO(dbConn);
-        Image image = imageDAO.get(resultSet.getInt("pfp_id"));
-
-        user.setProfilePic(image);
-      } 
+        user.setPassword("");
+        user.setProfilePic(new Image(resultSet.getInt("pfp_id")));
+        user.setAuth(true);
+      }
     } catch (Exception e) {
       System.err.println("User not found! " +e.getMessage());
     }
-    statement.close();
-    resultSet.close();
     return user;
   }
 
   public Object getByUsername(String username) throws SQLException {
     User user = new User();
     try {
-      query = "SELECT * FROM user WHERE username= ?;"; 
+      query = "SELECT * FROM user WHERE username= ?;";
 
       statement = dbConn.prepareStatement(query);
       statement.setString(1, username);
@@ -114,21 +110,15 @@ public class UserDAO implements DAO{
         user.setUsername(resultSet.getString("username"));
         user.setName(resultSet.getString("name"));
         user.setEmail(resultSet.getString("email"));
-        user.setPassword("");
-
-        ImageDAO imageDAO = new ImageDAO(dbConn);
-        Image image = (Image)imageDAO.get(new Image(resultSet.getInt("pfp_id")));
-
-        user.setProfilePic(image);
+        user.setPassword(" ");
+        user.setProfilePic(new Image(resultSet.getInt("pfp_id")));
         return user;
-      } 
+      }
     }
     catch (Exception ex) {
       System.err.println("User not found!" + ex.getMessage());
     }
-    statement.close();
-    resultSet.close();
-    return null; 
+    return null;
   }
 
   public List<User> listUsers(){
