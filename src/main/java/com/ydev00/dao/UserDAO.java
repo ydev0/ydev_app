@@ -24,7 +24,7 @@ public class UserDAO implements DAO{
   public User create(Object obj) {
     User user = (User) obj;
     try {
-      query = "insert into user (name, username, email, password, root, pfp_id) values (?, ?, ?, ?, ?, ?, ?) returning id;";
+      query = "insert into user (name, username, email, password, root, pfp_id) values (?, ?, ?, ?, ?, ?) returning id;";
 
       statement = dbConn.prepareStatement(query);
       statement.setString(1, user.getName());
@@ -34,7 +34,7 @@ public class UserDAO implements DAO{
       statement.setInt(5, 0);
 
       ImageDAO imageDAO = new ImageDAO(dbConn);
-      Image image = new Image();
+      Image image = imageDAO.get(user.getProfilePic());
 
       if(user.getProfilePic() == null) {
          image = (Image)imageDAO.get(new Image(0));

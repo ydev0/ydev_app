@@ -24,9 +24,12 @@ public class ImageDAO implements DAO{
   public Image create(Object obj) {
     Image image = (Image) obj;
     try {
-      query = "insert into image (image) values (?) returning  id";
+      query = "insert into image (type, image, width, height) values (?, ?, ?, ?) returning  id";
       statement = dbConn.prepareStatement(query);
-      statement.setBlob(1, image.getImage());
+      statement.setString(1, image.getType());
+      statement.setBlob(2, image.getImage());
+      statement.setInt(3, image.getWidth());
+      statement.setInt(4, image.getHeight());
       resultSet = statement.executeQuery();
 
       if(resultSet.next()) {
