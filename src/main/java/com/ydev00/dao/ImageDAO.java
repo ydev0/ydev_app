@@ -5,6 +5,7 @@ import com.ydev00.model.Image;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ImageDAO implements DAO{
@@ -20,7 +21,18 @@ public class ImageDAO implements DAO{
   @Override
   public Image create(Object obj) {
     Image image = (Image) obj;
+    try {
+      query = "insert into image (image) values (?) returning  id";
+      statement = dbConn.prepareStatement(query);
+      statement.setBlob(1, image.getImage());
+      resultSet = statement.executeQuery();
 
+      if(resultSet.next()) {
+        image.setId(resultSet.getInt(1));
+      }
+    } catch (Exception ex) {
+      System.err.println("Image not created: "+ex.getMessage());
+    }
     return image;
   }
 
@@ -36,7 +48,7 @@ public class ImageDAO implements DAO{
       resultSet = statement.executeQuery();
 
       if(resultSet.next()) {
-        image.setImage(null); // convert blob to file -> resultSet.getBlob("image")
+        image.setImage(resultSet.getBlob("image").getBinaryStream());
       }
       return image;
     } catch (Exception ex) {
@@ -47,8 +59,22 @@ public class ImageDAO implements DAO{
 
   @Override
   public List<?> getAll() {
-    return List.of();
+    List<Image> images = new ArrayList<>();
+    try {
+      query = "select * from image";
+      statement = dbConn.prepareStatement(query);
+      resultSet = statement.executeQuery();
+
+      while(resultSet.next()) {
+        Image image = new Image();
+        image.setId(resultSet.getInt("id"));
+        image.setImage(resultSet.getBlob("image").getBinaryStream());
+        images.add(image);
+      }
+    }
+    catch (Exception ex) {
+      System.err.println("Image not found: "+ex.getMessage());
+    }
+    return images;
   }
-
-
-} 
+}

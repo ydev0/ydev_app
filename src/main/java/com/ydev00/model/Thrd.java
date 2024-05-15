@@ -1,10 +1,17 @@
 package com.ydev00.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 
 public class Thrd {
+    @SerializedName("id")
     private int id;
+
+    @SerializedName("thrdList")
     private ArrayList<Thrd> thrdList = new ArrayList<>();
+
+    @SerializedName("content")
     private String content;
 
     public Thrd() {

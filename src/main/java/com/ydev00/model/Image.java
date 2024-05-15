@@ -1,6 +1,6 @@
 package com.ydev00.model;
 
-import java.io.File;
+import java.io.InputStream;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -9,14 +9,14 @@ public class Image {
   private int id;
 
   @SerializedName("image")
-  private File image;
+  private InputStream image;
 
   public Image() {}
 
   public Image(int id) {
     this.id = id;
   }
-  public Image(int id, File image) {
+  public Image(int id, InputStream image) {
     this.id = id;
     this.image = image;
   }
@@ -24,15 +24,15 @@ public class Image {
   public int getId() {
     return id;
   }
-  public File getImage() {
+  public InputStream getImage() {
     return image;
   }
 
-  public void setId(int id) { 
+  public void setId(int id) {
     this.id = id;
   }
 
-  public void setImage(File image) {
+  public void setImage(InputStream image) {
     this.image = image;
   }
 }

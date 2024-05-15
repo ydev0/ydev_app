@@ -1,9 +1,12 @@
 package com.ydev00.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.File;
 import java.util.ArrayList;
 
 public class Article extends Thrd {
+    @SerializedName("markdown")
     private File markdown;
 
     public Article() {

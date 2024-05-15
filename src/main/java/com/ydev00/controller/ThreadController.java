@@ -4,6 +4,10 @@ import spark.Route;
 
 import com.google.gson.Gson;
 import com.ydev00.model.Thrd;
+import com.ydev00.dao.ThreadDAO;
+
+import java.util.List;
+import java.util.ArrayList;
 
 import java.sql.Connection;
 
@@ -23,13 +27,24 @@ public class ThreadController {
     };
 
     public Route create = (request, response) -> {
+
         return gson.toJson(new Thrd());
     };
     public Route loadThread = (request, response) -> {
-        return "car";
+        List<Thrd> thrdList = new ArrayList<>();
+
+        ThreadDAO threadDAO = new ThreadDAO(dbConn);
+
+        thrdList = (List<Thrd>) threadDAO.getAll();
+
+        return gson.toJson(thrdList, List.class);
     };
 
     public Route getThreadsByUser = (request, response) -> {
         return gson.toJson(new Thrd());
+    };
+
+    public Route delete = (request, response) -> {
+        return "car";
     };
 }

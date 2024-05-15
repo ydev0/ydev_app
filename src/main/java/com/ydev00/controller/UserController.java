@@ -36,14 +36,9 @@ public class UserController {
     if (user == null)
       return null;
 
-    user.setName(gson.fromJson("name", String.class));
-
     System.out.println("CARLOS:" + gson.fromJson("name", String.class));
-    user.setUsername(gson.fromJson("username", String.class));
-    user.setEmail(gson.fromJson("email", String.class));
-    user.setProfilePic(new Image(Integer.parseInt(gson.fromJson("pfp_id", String.class))));
-    user.setName(gson.fromJson("name", String.class));
-    user.setPassword(gson.fromJson("password", String.class));
+    user = gson.fromJson(request.body(), User.class);
+    System.out.println("CARLOS:" + user.getUsername() + " " + user.getPassword());
 
     user = (User)userDAO.get(user);
 
@@ -65,13 +60,21 @@ public class UserController {
 
     user = gson.fromJson(request.body(), User.class);
 
+    if (userDAO.getByUsername(user.getUsername()) != null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "Username already exists");
+      return gson.toJson(message, Message.class);
+    }
+
+    response.status(HttpStatus.OK_200);
+
     return gson.toJson(userDAO.create(user));
   };
 
   public Route getByUsername = (request, response) -> {
     response.type("application.json");
 
-    user = userDAO.getByUsername(request.params("username"));
+    user = (User)userDAO.getByUsername(request.params("username"));
 
     if(user == null) {
       response.status(HttpStatus.FAILED_DEPENDENCY_424);
@@ -83,6 +86,4 @@ public class UserController {
     user.setAuth(true);
     return gson.toJson(user, User.class); 
   };
-
-
 }

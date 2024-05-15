@@ -45,7 +45,6 @@ public class UserDAO implements DAO{
         user.setProfilePic(image);
       }
 
-
       statement.setInt(6, user.getProfilePic().getId());
       resultSet = statement.executeQuery();
 
@@ -101,7 +100,7 @@ public class UserDAO implements DAO{
     return user;
   }
 
-  public User getByUsername(String username) throws SQLException {
+  public Object getByUsername(String username) throws SQLException {
     User user = new User();
     try {
       query = "SELECT * FROM user WHERE username= ?;"; 
@@ -135,6 +134,42 @@ public class UserDAO implements DAO{
   public List<User> listUsers(){
     List<User> users = new ArrayList<User>();
 
+    try {
+      query = "select * from user";
+      statement = dbConn.prepareStatement(query);
+      resultSet = statement.executeQuery();
+
+      while(resultSet.next()) {
+        User user = new User();
+        user.setId(resultSet.getInt("id"));
+        user.setName(resultSet.getString("name"));
+        user.setUsername(resultSet.getString("username"));
+        user.setEmail(resultSet.getString("email"));
+        user.setPassword("");
+
+        ImageDAO imageDAO = new ImageDAO(dbConn);
+        Image image = (Image)imageDAO.get(new Image(resultSet.getInt("pfp_id")));
+
+        user.setProfilePic(image);
+        users.add(user);
+      }
+    } catch (Exception ex) {
+      System.err.println("Could not get users: "+ex.getMessage());
+    }
     return users;
+  }
+
+  public Object deleteUser(Object obj) {
+    try {
+      User user = (User) obj;
+      query = "delete from user where id = ?";
+      statement = dbConn.prepareStatement(query);
+      statement.setInt(1, user.getId());
+      resultSet = statement.executeQuery();
+
+    } catch (Exception ex) {
+      System.err.println("User not found: "+ex.getMessage());
+    }
+    return null;
   }
 }

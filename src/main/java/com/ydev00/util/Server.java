@@ -42,6 +42,7 @@ public class Server {
         post("/t/new", "application.json", threadController.create);
 
         post("/a/new", "application.json", articleController.create);
+        delete("/t/:id", "application.json", threadController.delete);
       });
 
 
