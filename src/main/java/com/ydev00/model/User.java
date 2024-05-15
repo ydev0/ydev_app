@@ -21,8 +21,7 @@ public class User {
   @SerializedName("profilePic")
   private Image profilePic;
 
-  @SerializedName("root")
-  private boolean root;
+
 
   @SerializedName("auth")
   private boolean auth;
@@ -37,7 +36,6 @@ public class User {
     this.email = email;
     this.password = password;
     this.profilePic = profilePic;
-    this.root = false;
     this.auth = false;
   }
 

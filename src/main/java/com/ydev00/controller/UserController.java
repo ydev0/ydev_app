@@ -38,9 +38,9 @@ public class UserController {
 
     System.out.println("CARLOS:" + gson.fromJson("name", String.class));
     user = gson.fromJson(request.body(), User.class);
-    System.out.println("CARLOS:" + user.getUsername() + " " + user.getPassword());
+    System.out.println("CARLINHOs:" + user.getUsername() + " " + user.getPassword());
 
-    user = (User)userDAO.get(user);
+    user = (User) userDAO.get(user);
 
     if (user == null) {
       response.status(HttpStatus.FAILED_DEPENDENCY_424);
@@ -53,7 +53,8 @@ public class UserController {
     user.setProfilePic(imageDAO.get(user.getProfilePic()));
 
     response.status(HttpStatus.OK_200);
-    return "{\n\"user\": " + gson.toJson(user) + "\n";};
+    return gson.toJson(user, User.class);
+  }
 
   public Route signup = (request, response) -> {
     response.type("application.json");

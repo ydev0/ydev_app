@@ -25,13 +25,13 @@ public class Server {
       UserController userController = new UserController(dbConn);
       ThreadController threadController = new ThreadController(dbConn);
       ArticleController articleController = new ArticleController(dbConn);
+      ModUserController modUserController = new ModUserController(dbConn);
 
       // routes 
-      redirect.get("/", "/home"); 
+      redirect.get("/", "/home");
       path("/user", () -> {
         post("/login", userController.login);
         get("/:username", "application.json",userController.getByUsername);
-
         get("/:username/t/:id", "application.json",threadController.getThreadsByUser);
       });
 
@@ -40,13 +40,13 @@ public class Server {
         get("/t/:id", "application.json", threadController.loadThread);
 
         post("/t/new", "application.json", threadController.create);
-
         post("/a/new", "application.json", articleController.create);
+
         delete("/t/:id", "application.json", threadController.delete);
       });
 
 
-      if(dbConn != null) 
+      if(dbConn != null)
         System.out.println("[Server Connected]");
     } catch (Exception ex) {
       System.err.println("Server could not start. Error: " + ex.getMessage());

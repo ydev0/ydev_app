@@ -15,7 +15,8 @@ public class ModUserController {
     private Connection dbConn;
     private User user;
 
-    public ModUserController() {
+    public ModUserController(Connection dbConn) {
+        this.dbConn = dbConn;
         this.gson = new Gson();
     }
 

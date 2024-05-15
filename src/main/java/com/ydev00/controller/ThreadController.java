@@ -3,7 +3,9 @@ package com.ydev00.controller;
 import spark.Route;
 
 import com.google.gson.Gson;
+
 import com.ydev00.model.Thrd;
+import com.ydev00.model.User;
 import com.ydev00.dao.ThreadDAO;
 
 import java.util.List;
@@ -41,6 +43,14 @@ public class ThreadController {
     };
 
     public Route getThreadsByUser = (request, response) -> {
+        response.type("application.json");
+
+        List<Thrd> thrdList = new ArrayList<>();
+
+        ThreadDAO threadDAO = new ThreadDAO(dbConn);
+
+        thrdList = threadDAO.getByUser(gson.fromJson("user", User.class));
+
         return gson.toJson(new Thrd());
     };
 
