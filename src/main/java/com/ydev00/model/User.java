@@ -27,9 +27,8 @@ public class User {
   public User() {
   }
 
-  public User(int id, String name, String username, String email, String password, Image profilePic) {
+  public User(int id,  String username, String email, String password, Image profilePic) {
     this.id = id;
-    this.name = name;
     this.username = username;
     this.email = email;
     this.password = password;
@@ -41,9 +40,7 @@ public class User {
     this.id = id;
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+
 
   public void setUsername(String userName) {
     this.username = userName;
@@ -73,9 +70,6 @@ public class User {
     return profilePic;
   }
 
-  public String getName() {
-    return name;
-  }
 
   public String getUsername(){
     return username;

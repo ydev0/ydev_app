@@ -10,8 +10,8 @@ public class ModUser extends User{
     super();
   }
 
-  public ModUser(int id, String name, String username, String email, String password, Image profilePic) {
-    super(id, name, username, email, password, profilePic);
+  public ModUser(int id, String username, String email, String password, Image profilePic) {
+    super(id, username, email, password, profilePic);
     this.root = true;
   }
 

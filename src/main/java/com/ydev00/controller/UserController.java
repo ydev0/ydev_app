@@ -73,7 +73,7 @@ public class UserController {
     userDAO.create(user);
 
     response.status(HttpStatus.OK_200);
-    return gson.toJson(userDAO.create(user));
+    return gson.toJson("User created", String.class);
   };
 
   public Route getByUsername = (request, response) -> {
