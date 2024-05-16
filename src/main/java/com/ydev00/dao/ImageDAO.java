@@ -37,6 +37,7 @@ public class ImageDAO implements DAO{
       }
     } catch (Exception ex) {
       System.err.println("Image not created: "+ex.getMessage());
+      return null;
     }
     return image;
   }

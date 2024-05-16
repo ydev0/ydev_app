@@ -2,11 +2,8 @@ package com.ydev00.util;
 
 import static spark.Spark.*;
 
-import java.io.*;
 import java.sql.Connection;
 
-import com.ydev00.model.*;
-import com.ydev00.util.*;
 import com.ydev00.controller.*;
 
 
@@ -33,13 +30,14 @@ public class Server {
       path("/user", () -> {
         post("/login", "application.json", userController.login);
         post("/signup", "application.json", userController.signup);
-        get("/:username", "application.json",userController.getByUsername);
-        get("/:username/t/:id", "application.json",threadController.getThreadsByUser);
+        get("/:username", "application.json", userController.getByUsername);
+        get("/:username/t/:id", "application.json", threadController.getThreadsByUser);
 
         post("/:username/follow", "application.json", userController.follow);
         post("/:username/unfollow", "application.json", userController.unfollow);
         post("/:username/like", "application.json", userController.like);
         post("/:username/unlike", "application.json", userController.unlike);
+
         post("/logout", "application.json", userController.logout);
       });
 

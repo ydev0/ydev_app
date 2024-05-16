@@ -63,6 +63,7 @@ public class UserController {
     response.type("application.json");
 
     System.out.println(gson.toJson(request.body(), User.class));
+    System.out.println("rodrigo");
 
     user = gson.fromJson(request.body(), User.class);
 
