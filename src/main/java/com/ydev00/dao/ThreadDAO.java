@@ -10,7 +10,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ThreadDAO implements DAO{private Connection dbConn;
+public class ThreadDAO implements DAO{
+  private Connection dbConn;
   private String query;
   private PreparedStatement statement;
   private ResultSet resultSet;
@@ -21,6 +22,28 @@ public class ThreadDAO implements DAO{private Connection dbConn;
 
   @Override
   public Object create(Object obj) {
+    return null;
+  }
+
+  public Object create(Object obj, int id) {
+    Article article = (Article) obj;
+    if(article.getMarkdown() != null) {
+      ArticleDAO articleDAO = new ArticleDAO(dbConn);
+      return articleDAO.create(article, id);
+    }
+    try {
+      query = "insert into thread (text, usr_id) values (?, ?) returning id;";
+      statement = dbConn.prepareStatement(query);
+      statement.setString(1, article.getText());
+      statement.setInt(2, id);
+      resultSet = statement.executeQuery();
+
+      if(resultSet.next()) {
+        article.setId(resultSet.getInt(1));
+      }
+    } catch (Exception ex) {
+      System.err.println("Could not create thread: "+ex.getMessage());
+    }
     return 0;
   }
 

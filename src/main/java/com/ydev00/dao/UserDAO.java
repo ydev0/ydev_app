@@ -24,22 +24,16 @@ public class UserDAO implements DAO{
   public User create(Object obj) {
     User user = (User) obj;
     try {
-      query = "insert into user (username, email, password, root, pfp_id) values (?, ?, ?, 0 , ?) returning id;";
+      query = "insert into user (username, email, password, root, pfp_id) values (?, ?, ?, 0 , 0) returning id;";
 
       statement = dbConn.prepareStatement(query);
       statement.setString(1, user.getUsername());
       statement.setString(2, user.getEmail());
       statement.setString(3, user.getPassword());
-      statement.setInt(4, user.getProfilePic().getId());
+
+      user.setProfilePic(null);
+
       statement.executeQuery();
-
-      ImageDAO imageDAO = new ImageDAO(dbConn);
-      Image image = (Image)imageDAO.get(user.getProfilePic());
-
-      if (image == null)
-        image = (Image)imageDAO.create(user.getProfilePic());
-      user.setProfilePic(image);
-
       resultSet = statement.getGeneratedKeys();
 
       if (resultSet.next()) {
@@ -139,8 +133,6 @@ public class UserDAO implements DAO{
 
   public Object delete(Object obj) {
     try {
-
-
       User user = (User) obj;
       query = "delete from user where id = ?";
       statement = dbConn.prepareStatement(query);

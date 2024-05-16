@@ -2,7 +2,6 @@ package com.ydev00.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.sql.Blob;
 import java.util.ArrayList;
 
 public class Thrd {

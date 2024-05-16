@@ -1,9 +1,7 @@
 package com.ydev00.dao;
 
-import java.sql.Blob;
 import com.ydev00.model.Image;
 
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,12 +26,10 @@ public class ImageDAO implements DAO{
         return get(new Image(0));
       }
 
-      query = "insert into image (type, image, width, height) values (?, ?, ?, ?) returning  id";
+      query = "insert into image (type, image) values (?, ? ) returning  id";
       statement = dbConn.prepareStatement(query);
       statement.setString(1, image.getType());
       statement.setBlob(2, image.getImage());
-      statement.setInt(3, image.getWidth());
-      statement.setInt(4, image.getHeight());
       resultSet = statement.executeQuery();
 
       if(resultSet.next()) {
@@ -58,8 +54,6 @@ public class ImageDAO implements DAO{
         image.setId(resultSet.getInt("id"));
         image.setType(resultSet.getString("type"));
         image.setImage(resultSet.getBlob("image"));
-        image.setWidth(resultSet.getInt("width"));
-        image.setHeight(resultSet.getInt("height"));
         return image;
       }
     } catch (Exception ex) {
@@ -81,8 +75,6 @@ public class ImageDAO implements DAO{
         image.setId(resultSet.getInt("id"));
         image.setType(resultSet.getString("type"));
         image.setImage(resultSet.getBlob("image"));
-        image.setWidth(resultSet.getInt("width"));
-        image.setHeight(resultSet.getInt("height"));
         images.add(image);
       }
     }

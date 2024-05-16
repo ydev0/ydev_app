@@ -35,7 +35,12 @@ public class Server {
         post("/signup", "application.json", userController.signup);
         get("/:username", "application.json",userController.getByUsername);
         get("/:username/t/:id", "application.json",threadController.getThreadsByUser);
+
         post("/:username/follow", "application.json", userController.follow);
+        post("/:username/unfollow", "application.json", userController.unfollow);
+        post("/:username/like", "application.json", userController.like);
+        post("/:username/unlike", "application.json", userController.unlike);
+        post("/logout", "application.json", userController.logout);
       });
 
       path("/home", () -> {

@@ -82,16 +82,4 @@ public class User {
   public String getPassword() {
     return password;
   }
-
-
-  public String toString() {
-    return "User{" +
-    "id=" + id + 
-    ", username='" + username + '\'' +
-    ", name='" + name + '\'' +
-    ", email='" + email + '\'' +
-    ", password='" + password + '\'' +
-    ", pfp= '" +profilePic + '\'' +
-    ", auth= '" +auth+ '\'' +
-    '}';
-  }}
+}

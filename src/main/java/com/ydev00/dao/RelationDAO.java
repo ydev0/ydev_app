@@ -5,8 +5,6 @@ import com.ydev00.model.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
 
 public class RelationDAO {
   private Connection dbConn;
@@ -34,7 +32,6 @@ public class RelationDAO {
       System.err.println("Could not follow: "+ex.getMessage());
     }
   }
-
 
   public User unfollow (Object obj) {
     return null;

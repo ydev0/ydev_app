@@ -62,6 +62,8 @@ public class UserController {
   public Route signup = (request, response) -> {
     response.type("application.json");
 
+    System.out.println(gson.toJson(request.body(), User.class));
+
     user = gson.fromJson(request.body(), User.class);
 
     if (userDAO.getByUsername(user.getUsername()) != null) {
@@ -70,7 +72,7 @@ public class UserController {
       return gson.toJson(message, Message.class);
     }
 
-    userDAO.create(user);
+    user = (User)userDAO.create(user);
 
     response.status(HttpStatus.OK_200);
     return gson.toJson("User created", String.class) + gson.toJson(user, User.class);
@@ -163,9 +165,22 @@ public class UserController {
   public Route logout = (request, response) -> {
     response.type("application.json");
 
+    if(request.headers("auth") == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "Not logged in");
+      return gson.toJson(message, Message.class);
+    }
+
     User user = gson.fromJson(request.body(), User.class);
 
+    if(user == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "Wrong input");
+      return gson.toJson(message, Message.class);
+    }
+
     user.setAuth(false);
-    return "Logged out user +" +user.getUsername();
+
+    return "Logged user out";
   };
 }
