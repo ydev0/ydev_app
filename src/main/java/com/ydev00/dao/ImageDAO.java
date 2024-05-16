@@ -60,9 +60,8 @@ public class ImageDAO implements DAO{
         image.setImage(resultSet.getBlob("image"));
         image.setWidth(resultSet.getInt("width"));
         image.setHeight(resultSet.getInt("height"));
+        return image;
       }
-
-      return image;
     } catch (Exception ex) {
       System.err.println("Image not found: "+ex.getMessage());
     }

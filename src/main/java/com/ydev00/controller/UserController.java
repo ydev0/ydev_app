@@ -73,7 +73,7 @@ public class UserController {
     userDAO.create(user);
 
     response.status(HttpStatus.OK_200);
-    return gson.toJson("User created", String.class);
+    return gson.toJson("User created", String.class) + gson.toJson(user, User.class);
   };
 
   public Route getByUsername = (request, response) -> {
@@ -104,9 +104,11 @@ public class UserController {
       return gson.toJson(message, Message.class);
     }
 
-    User user = gson.fromJson(request.body(), User.class);
 
-    return "Followed user +" +user.getUsername();
+    RelationDAO relationDAO = new RelationDAO(dbConn);
+    relationDAO.follow(request.params("username"), gson.fromJson(request.body(), User.class).getUsername());
+
+    return "Followed user +" + request.params("username");
   };
 
   public Route unfollow = (request, response) -> {

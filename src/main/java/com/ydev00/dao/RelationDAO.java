@@ -18,9 +18,23 @@ public class RelationDAO {
     this.dbConn = dbConn;
   }
 
-  public User follow (Object obj) {
-    return null;
+  public void follow (String followee, String follower) {
+    try {
+      UserDAO userDAO = new UserDAO(dbConn);
+      User user = (User)userDAO.getByUsername(follower);
+
+      User followeeUser = (User)userDAO.getByUsername(followee);
+
+      query = "insert into relations (follower_id, followed_id) values (?, ?)";
+      statement = dbConn.prepareStatement(query);
+      statement.setInt(1, user.getId());
+      statement.setInt(2, followeeUser.getId());
+      statement.executeQuery();
+    } catch (Exception ex) {
+      System.err.println("Could not follow: "+ex.getMessage());
+    }
   }
+
 
   public User unfollow (Object obj) {
     return null;
