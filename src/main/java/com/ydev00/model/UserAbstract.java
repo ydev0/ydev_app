@@ -65,5 +65,4 @@ public abstract class UserAbstract {
   public String getPassword() {
     return password;
   }
-
 }
