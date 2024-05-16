@@ -2,12 +2,12 @@ package com.ydev00.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.io.File;
+import java.sql.Blob;
 import java.util.ArrayList;
 
 public class Article extends Thrd {
     @SerializedName("markdown")
-    private File markdown;
+    private Blob markdown;
 
     @SerializedName("title")
     private String title;
@@ -16,13 +16,13 @@ public class Article extends Thrd {
         super();
     }
 
-    public Article(int id, ArrayList<Thrd> thrdList, String content, File markdown) {
-        super(id, thrdList, content);
+    public Article(int id, String text,  ArrayList<Thrd> thrdList, String title, Blob markdown) {
+        super(id, text, thrdList);
         this.title = title;
         this.markdown = markdown;
     }
 
-    public File getMarkdown() {
+    public Blob getMarkdown() {
         return markdown;
     }
 
@@ -30,7 +30,7 @@ public class Article extends Thrd {
         return title;
     }
 
-    public void setMarkdown(File markdown) {
+    public void setMarkdown(Blob markdown) {
         this.markdown = markdown;
     }
 

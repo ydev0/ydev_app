@@ -149,8 +149,10 @@ public class UserDAO implements DAO{
     return users;
   }
 
-  public Object deleteUser(Object obj) {
+  public Object delete(Object obj) {
     try {
+
+
       User user = (User) obj;
       query = "delete from user where id = ?";
       statement = dbConn.prepareStatement(query);

@@ -15,5 +15,11 @@ public class ModUser extends User{
     this.root = true;
   }
 
+  public boolean isRoot() {
+    return root;
+  }
 
+  public void setRoot(boolean root) {
+    this.root = root;
+  }
 }

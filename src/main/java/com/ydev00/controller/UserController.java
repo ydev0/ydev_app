@@ -1,5 +1,7 @@
 package com.ydev00.controller;
 
+import com.ydev00.dao.RelationDAO;
+import com.ydev00.model.Thrd;
 import spark.Route;
 import static spark.Spark.*;
 
@@ -91,5 +93,77 @@ public class UserController {
 
     response.status(HttpStatus.OK_200);
     return gson.toJson(user, User.class);
+  };
+
+  public Route follow = (request, response) -> {
+    response.type("application.json");
+
+    if (request.headers("auth") == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "Not logged in");
+      return gson.toJson(message, Message.class);
+    }
+
+    User user = gson.fromJson(request.body(), User.class);
+
+    return "Followed user +" +user.getUsername();
+  };
+
+  public Route unfollow = (request, response) -> {
+    response.type("application.json");
+
+    if (request.headers("auth") == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "Not logged in");
+      return gson.toJson(message, Message.class);
+    }
+
+
+    User user = gson.fromJson(request.body(), User.class);
+
+    return "Unfollowed user +" +user.getUsername();
+  };
+
+  public Route like = (request, response) -> {
+    response.type("application.json");
+
+    if (request.headers("auth") == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "Not logged in");
+      return gson.toJson(message, Message.class);
+    }
+
+    Thrd thrd = gson.fromJson(request.body(), Thrd.class);
+
+    RelationDAO relationDAO = new RelationDAO(dbConn);
+    relationDAO.like(thrd.getId(), request.headers("username"));
+
+    return "Liked post +" + thrd.getId();
+  };
+
+  public Route unlike = (request, response) -> {
+    response.type("application.json");
+
+    if (request.headers("auth") == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "Not logged in");
+      return gson.toJson(message, Message.class);
+    }
+
+    Thrd thrd = gson.fromJson(request.body(), Thrd.class);
+
+    RelationDAO relationDAO = new RelationDAO(dbConn);
+    relationDAO.unlike(thrd.getId(), request.headers("username"));
+
+    return "Unliked post +" + thrd.getId();
+  };
+
+  public Route logout = (request, response) -> {
+    response.type("application.json");
+
+    User user = gson.fromJson(request.body(), User.class);
+
+    user.setAuth(false);
+    return "Logged out user +" +user.getUsername();
   };
 }

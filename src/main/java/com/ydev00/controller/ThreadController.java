@@ -1,5 +1,6 @@
 package com.ydev00.controller;
 
+import com.ydev00.model.Article;
 import spark.Route;
 
 import com.google.gson.Gson;
@@ -32,12 +33,19 @@ public class ThreadController {
 
         return gson.toJson(new Thrd());
     };
+
     public Route loadThread = (request, response) -> {
-        List<Thrd> thrdList = new ArrayList<>();
+        response.type("application.json");
+
+        List<Thrd> thrdList;
 
         ThreadDAO threadDAO = new ThreadDAO(dbConn);
 
         thrdList = (List<Thrd>) threadDAO.getAll();
+
+        if(thrdList.isEmpty()) {
+            return gson.toJson(new Thrd());
+        }
 
         return gson.toJson(thrdList, List.class);
     };
@@ -45,16 +53,16 @@ public class ThreadController {
     public Route getThreadsByUser = (request, response) -> {
         response.type("application.json");
 
-        List<Thrd> thrdList = new ArrayList<>();
+        List<Thrd> thrdList;
 
         ThreadDAO threadDAO = new ThreadDAO(dbConn);
 
-        thrdList = threadDAO.getByUser(gson.fromJson("user", User.class));
+        thrdList = (List<Thrd>) threadDAO.getByUser(gson.fromJson("user", User.class));
 
         return gson.toJson(new Thrd());
     };
 
     public Route delete = (request, response) -> {
-        return "car";
+        return "carlos";
     };
 }

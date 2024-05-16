@@ -24,7 +24,6 @@ public class Server {
 
       UserController userController = new UserController(dbConn);
       ThreadController threadController = new ThreadController(dbConn);
-      ArticleController articleController = new ArticleController(dbConn);
       ModUserController modUserController = new ModUserController(dbConn);
 
       // routes
@@ -32,21 +31,30 @@ public class Server {
       redirect.get("/home", "/home/");
 
       path("/user", () -> {
-        post("/login", userController.login);
+        post("/login", "application.json", userController.login);
+        post("/signup", "application.json", userController.signup);
         get("/:username", "application.json",userController.getByUsername);
         get("/:username/t/:id", "application.json",threadController.getThreadsByUser);
+        post("/follow", "application.json", userController.follow);
       });
 
       path("/home", () -> {
         get("/", "application.json" , threadController.loadFeed);
-        get("/t/:id", "application.json", threadController.loadThread);
 
-        post("/t/new", "application.json", threadController.create);
-        post("/a/new", "application.json", articleController.create);
+        path("/t", () -> {
+          get("/:id", "application.json", threadController.loadThread);
+          post("/new", "application.json", threadController.create);
+          delete("/:id", "application.json", threadController.delete);
+        });
 
-        delete("/t/:id", "application.json", threadController.delete);
+        post("/a/new", "application.json", threadController.create);
       });
 
+      path("/mod", () -> {
+        post("/login", "application.json", modUserController.login);
+        get("/:username", "application.json", userController.getByUsername);
+        get("/:username/t/:id", "application.json",threadController.getThreadsByUser);
+      });
 
       if(dbConn != null)
         System.out.println("[Server Connected]");
