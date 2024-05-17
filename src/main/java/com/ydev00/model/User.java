@@ -32,4 +32,18 @@ public class User extends UserAbstract {
     setProfilePic(profilePic);
     setAuth(false);
   }
+
+  public User(int id,  String username, String email, String password, Image profilePic) {
+    setEmail(email);
+    setPassword(password);
+    setAuth(false);
+  }
+
+  public User(int id,  String username, String email, String password, Image profilePic) {
+    setUsername(username);
+    setEmail(email);
+    setPassword(password);
+    setProfilePic(profilePic);
+    setAuth(false);
+  }
 }
