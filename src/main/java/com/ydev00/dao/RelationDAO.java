@@ -19,9 +19,9 @@ public class RelationDAO {
   public void follow (String followee, String follower) {
     try {
       UserDAO userDAO = new UserDAO(dbConn);
-      User user = (User)userDAO.getByUsername(follower);
+      User user = (User)userDAO.getByUsername(new User(follower));
 
-      User followeeUser = (User)userDAO.getByUsername(followee);
+      User followeeUser = (User)userDAO.getByUsername(new User(followee));
 
       query = "insert into relations (follower_id, followed_id) values (?, ?)";
       statement = dbConn.prepareStatement(query);

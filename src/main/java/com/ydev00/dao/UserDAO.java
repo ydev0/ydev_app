@@ -20,19 +20,20 @@ public class UserDAO implements DAO{
   public UserDAO(Connection dbConn) {
     this.dbConn = dbConn;
   }
-
   public User create(Object obj) {
     User user = (User) obj;
+    ImageDAO imageDAO = new ImageDAO(dbConn);
     try {
-      query = "insert into user (username, email, password, root, pfp_id) values (?, ?, ?, 0 , 0) returning id;";
+      query = "insert into user (username, email, password, root, pfp_id) values (?, ?, ?, false , ?) returning id;";
+
+      Image image = (Image) imageDAO.create(user.getProfilePic());
+      user.setProfilePic(image);
 
       statement = dbConn.prepareStatement(query);
       statement.setString(1, user.getUsername());
       statement.setString(2, user.getEmail());
       statement.setString(3, user.getPassword());
-
-      user.setProfilePic(null);
-
+      statement.setInt(4, image.getId());
       statement.executeQuery();
       resultSet = statement.getGeneratedKeys();
 
@@ -80,20 +81,20 @@ public class UserDAO implements DAO{
     return user;
   }
 
-  public Object getByUsername(String username) throws SQLException {
-    User user = new User();
+  public Object getByUsername(Object obj) throws SQLException {
     try {
+      User user =  (User) obj;
       query = "SELECT * FROM user WHERE username= ?;";
 
       statement = dbConn.prepareStatement(query);
-      statement.setString(1, username);
+      statement.setString(1, user.getUsername());
       resultSet = statement.executeQuery();
 
       if(resultSet.next()) {
         user.setId(resultSet.getInt("id"));
         user.setUsername(resultSet.getString("username"));
         user.setEmail(resultSet.getString("email"));
-        user.setPassword(" ");
+        user.setPassword("");
         user.setProfilePic(new Image(resultSet.getInt("pfp_id")));
         return user;
       }

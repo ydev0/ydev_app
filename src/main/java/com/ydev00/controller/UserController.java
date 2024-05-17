@@ -6,6 +6,7 @@ import spark.Route;
 import static spark.Spark.*;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import com.ydev00.model.User;
 import com.ydev00.model.Image;
@@ -17,7 +18,6 @@ import org.eclipse.jetty.http.HttpStatus;
 import com.google.gson.Gson;
 
 public class UserController {
-  private User user;
   private Connection dbConn;
   private Gson gson;
   private UserDAO userDAO;
@@ -62,27 +62,27 @@ public class UserController {
   public Route signup = (request, response) -> {
     response.type("application.json");
 
-    System.out.println(gson.toJson(request.body(), User.class));
-    System.out.println("rodrigo");
+    User user = gson.fromJson(request.body(), User.class);
 
-    user = gson.fromJson(request.body(), User.class);
+    System.out.println(user.getProfilePic().getImage().getBinaryStream());
+    System.out.println(user.getProfilePic());
 
-    if (userDAO.getByUsername(user.getUsername()) != null) {
+    if ((User) userDAO.getByUsername(user) != null) {
       response.status(HttpStatus.FAILED_DEPENDENCY_424);
       Message message = new Message("Error", "Username already exists");
       return gson.toJson(message, Message.class);
     }
 
-    user = (User)userDAO.create(user);
+    user = (User) userDAO.create(user);
 
     response.status(HttpStatus.OK_200);
-    return gson.toJson("User created", String.class) + gson.toJson(user, User.class);
+    return gson.toJson(user, User.class);
   };
 
   public Route getByUsername = (request, response) -> {
     response.type("application.json");
 
-    user = (User) userDAO.getByUsername(request.params("username"));
+    User user = (User) userDAO.getByUsername(new User(request.params("username")));
 
     if(user == null) {
       response.status(HttpStatus.FAILED_DEPENDENCY_424);
@@ -106,7 +106,6 @@ public class UserController {
       Message message = new Message("Error", "Not logged in");
       return gson.toJson(message, Message.class);
     }
-
 
     RelationDAO relationDAO = new RelationDAO(dbConn);
     relationDAO.follow(request.params("username"), gson.fromJson(request.body(), User.class).getUsername());

@@ -18,6 +18,11 @@ public class Image {
     this.id = id;
   }
 
+  public Image(String type, Blob image) {
+    this.type = type;
+    this.image = image;
+  }
+
   public Image(int id, String type, Blob image, int width, int height) {
     this.id = id;
     this.type = type;

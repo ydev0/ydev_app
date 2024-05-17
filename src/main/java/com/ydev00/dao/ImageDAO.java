@@ -26,11 +26,12 @@ public class ImageDAO implements DAO{
         return get(new Image(0));
       }
 
-      query = "insert into image (type, image) values (?, ? ) returning  id";
+      query = "insert into image (type, image) values (?, ?) returning  id";
       statement = dbConn.prepareStatement(query);
       statement.setString(1, image.getType());
       statement.setBlob(2, image.getImage());
-      resultSet = statement.executeQuery();
+      statement.executeQuery();
+      resultSet = statement.getGeneratedKeys();
 
       if(resultSet.next()) {
         image.setId(resultSet.getInt(1));
