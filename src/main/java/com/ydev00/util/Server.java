@@ -27,6 +27,8 @@ public class Server {
       redirect.get("/", "/home/");
       redirect.get("/home", "/home/");
 
+      get("/getAll", userController.getAll);
+
       path("/user", () -> {
         post("/signup", userController.signup);
         post("/login", "application.json", userController.login);
@@ -47,7 +49,6 @@ public class Server {
         path("/t", () -> {
           get("/:id", "application.json", threadController.loadThread);
           post("/new", "application.json", threadController.create);
-          delete("/:id", "application.json", threadController.delete);
         });
 
         post("/a/new", "application.json", threadController.create);

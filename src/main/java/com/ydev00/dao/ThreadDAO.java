@@ -26,52 +26,57 @@ public class ThreadDAO implements DAO{
   }
 
   public Object create(Object obj, int id) {
-    Article article = (Article) obj;
-    if(article.getMarkdown() != null) {
-      ArticleDAO articleDAO = new ArticleDAO(dbConn);
-      return articleDAO.create(article, id);
-    }
+    Thrd thrd = (Thrd) obj;
     try {
-      query = "insert into thread (text, usr_id) values (?, ?) returning id;";
-      statement = dbConn.prepareStatement(query);
-      statement.setString(1, article.getText());
+      query = "insert into thread (text, usr_id) values (?, ?); ";
+      if(thrd.getArticle() != null) {
+        ArticleDAO articleDAO = new ArticleDAO(dbConn);
+        Article article = (Article) articleDAO.create(thrd, id);
+        query = "insert into thread (text, usr_id, article_id) values (?, ?, ?); ";
+
+      }
+      statement = dbConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+      statement.setString(1, thrd.getText());
       statement.setInt(2, id);
-      resultSet = statement.executeQuery();
+      if(thrd.getArticle() != null )
+        statement.setInt(3, thrd.getArticle().getId());
+      statement.execute();
+      resultSet = statement.getGeneratedKeys();
 
       if(resultSet.next()) {
-        article.setId(resultSet.getInt(1));
+        thrd.setId(resultSet.getInt(1));
       }
     } catch (Exception ex) {
       System.err.println("Could not create thread: "+ex.getMessage());
+      return null;
     }
-    return 0;
+    return thrd;
   }
 
   @Override
   public Object get(Object obj) {
-    Article article = (Article) obj;
+    Thrd thread = (Thrd) obj;
     try {
       query = "select * from thread where id = ?";
       statement = dbConn.prepareStatement(query);
-      statement.setInt(1, article.getId());
+      statement.setInt(1, thread.getId());
       resultSet = statement.executeQuery();
 
       while(resultSet.next()) {
-        article.setId(resultSet.getInt("id"));
-        article.setText(resultSet.getString("text"));
-        if(resultSet.getBlob("content") != null) {
-          article.setTitle(resultSet.getString("title"));
-          article.setMarkdown(resultSet.getBlob("content"));
-        }
-        else {
-          article.setTitle(null);
-          article.setMarkdown(null);
+        thread.setId(resultSet.getInt("id"));
+        thread.setText(resultSet.getString("text"));
+
+        if(resultSet.getString("markdown") != null) {
+          ArticleDAO articleDAO = new ArticleDAO(dbConn);
+          Article article = (Article) articleDAO.get(new Article(resultSet.getInt("article_id")));
+          thread.setArticle(article);
         }
       }
     } catch (Exception ex) {
       System.err.println("Could not get threads:"+ex.getMessage());
+      return null;
     }
-    return article;
+    return thread;
   }
 
   @Override
@@ -83,16 +88,13 @@ public class ThreadDAO implements DAO{
       resultSet = statement.executeQuery();
 
       while(resultSet.next()) {
-        Article thrd = new Article();
+        Thrd thrd = new Thrd();
         thrd.setId(resultSet.getInt("id"));
         thrd.setText(resultSet.getString("text"));
         if(resultSet.getBlob("content") != null) {
-          thrd.setTitle(resultSet.getString("title"));
-          thrd.setMarkdown(resultSet.getBlob("content"));
-        }
-        else {
-          thrd.setTitle(null);
-          thrd.setMarkdown(null);
+          ArticleDAO articleDAO = new ArticleDAO(dbConn);
+          Article article = (Article) articleDAO.get(new Article(resultSet.getInt("article_id")));
+          thrd.setArticle(article);
         }
         thrdList.add(thrd);
       }
@@ -102,7 +104,7 @@ public class ThreadDAO implements DAO{
     return thrdList;
   }
 
-  public List<?> getByUser(User user) {
+  public List<Thrd> getByUser(User user) {
     List<Thrd> thrdList = new ArrayList<>();
     try {
       query = "select * from thread where usr_id = ?";
@@ -111,36 +113,34 @@ public class ThreadDAO implements DAO{
       resultSet = statement.executeQuery();
 
       while(resultSet.next()) {
-        Article thrd = new Article();
+        Thrd thrd = new Thrd();
         thrd.setId(resultSet.getInt("id"));
         thrd.setText(resultSet.getString("text"));
-        if(resultSet.getBlob("content") != null) {
-          thrd.setTitle(resultSet.getString("title"));
-          thrd.setMarkdown(resultSet.getBlob("content"));
-        }
-        else {
-          thrd.setTitle(null);
-          thrd.setMarkdown(null);
+        if(resultSet.getInt("article_id") != 0) {
+          ArticleDAO articleDAO = new ArticleDAO(dbConn);
+          Article article = (Article) articleDAO.get(new Article(resultSet.getInt("article_id")));
+          thrd.setArticle(article);
         }
         thrdList.add(thrd);
       }
     } catch (Exception ex) {
       System.err.println("Could not get threads: "+ex.getMessage());
+      return null;
     }
     return thrdList;
   }
 
   public Object delete(Object obj) {
+    Thrd thrd = (Thrd) obj;
     try {
-      Thrd thrd = (Thrd) obj;
       query = "delete from thread where id = ?";
       statement = dbConn.prepareStatement(query);
       statement.setInt(1, thrd.getId());
       resultSet = statement.executeQuery();
-      return thrd;
     } catch (Exception ex) {
-      System.err.println("Post not found: "+ex.getMessage());
+      System.err.println("Thread not found: "+ex.getMessage());
+      return null;
     }
-    return null;
+    return thrd;
   }
 }

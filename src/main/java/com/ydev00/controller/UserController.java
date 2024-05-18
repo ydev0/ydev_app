@@ -5,6 +5,7 @@ import com.ydev00.model.thread.Thrd;
 import spark.Route;
 
 import java.sql.Connection;
+import java.util.List;
 
 import com.ydev00.model.user.User;
 import com.ydev00.model.user.ModUser;
@@ -21,6 +22,7 @@ public class UserController {
   private Gson gson;
   private UserDAO userDAO;
   private ImageDAO imageDAO;
+  private RelationDAO relationDAO;
 
 
   public UserController() {}
@@ -30,6 +32,7 @@ public class UserController {
     this.gson = new Gson();
     this.userDAO = new UserDAO(dbConn);
     this.imageDAO = new ImageDAO(dbConn);
+    this.relationDAO = new RelationDAO(dbConn);
   }
 
   public Route signup = (request, response) -> {
@@ -109,6 +112,20 @@ public class UserController {
     return gson.toJson(user, User.class);
   };
 
+  public Route getAll = (request, response) -> {
+    response.type("application.json");
+
+    List<User> lista = userDAO.listUsers();
+
+    if(lista == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "wtf");
+      return gson.toJson(message, Message.class);
+    }
+
+    return gson.toJson(lista,User.class);
+  };
+
   public Route follow = (request, response) -> {
     response.type("application.json");
 
@@ -118,8 +135,7 @@ public class UserController {
       return gson.toJson(message, Message.class);
     }
 
-    RelationDAO relationDAO = new RelationDAO(dbConn);
-    relationDAO.follow(request.params("username"), gson.fromJson(request.body(), User.class).getUsername());
+    relationDAO.follow(request.params("username"), request.headers("username"));
 
     return "Followed user +" + request.params("username");
   };
@@ -133,8 +149,9 @@ public class UserController {
       return gson.toJson(message, Message.class);
     }
 
-
     User user = gson.fromJson(request.body(), User.class);
+
+    relationDAO.unfollow(request.params("username"), request.headers("username"));
 
     return "Unfollowed user +" +user.getUsername();
   };
@@ -150,10 +167,9 @@ public class UserController {
 
     Thrd thrd = gson.fromJson(request.body(), Thrd.class);
 
-    RelationDAO relationDAO = new RelationDAO(dbConn);
     relationDAO.like(thrd.getId(), request.headers("username"));
 
-    return "Liked post +" + thrd.getId();
+    return "Liked post +" +thrd.getId();
   };
 
   public Route unlike = (request, response) -> {
@@ -167,7 +183,6 @@ public class UserController {
 
     Thrd thrd = gson.fromJson(request.body(), Thrd.class);
 
-    RelationDAO relationDAO = new RelationDAO(dbConn);
     relationDAO.unlike(thrd.getId(), request.headers("username"));
 
     return "Unliked post +" + thrd.getId();
@@ -191,7 +206,6 @@ public class UserController {
     }
 
     user.setAuth(false);
-
     return "Logged user out";
   };
 }

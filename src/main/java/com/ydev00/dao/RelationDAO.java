@@ -26,7 +26,7 @@ public class RelationDAO {
       User user = (User)userDAO.getByUsername(new User(follower));
       User followeeUser = (User)userDAO.getByUsername(new User(followee));
 
-      query = "insert into relations (follower_id, followed_id) values (?, ?)";
+      query = "insert into usr_flw (follower_id, followed_id) values (?, ?)";
       statement = dbConn.prepareStatement(query);
       statement.setInt(1, user.getId());
       statement.setInt(2, followeeUser.getId());
@@ -43,7 +43,7 @@ public class RelationDAO {
       User user = (User)userDAO.getByUsername(new User(follower));
       User followeeUser = (User)userDAO.getByUsername(new User(followee));
 
-      query = "delete from relations where follower_id = ? and followed_id = ?";
+      query = "delete from usr_flw where follower_id = ? and followed_id = ?";
       statement = dbConn.prepareStatement(query);
       statement.setInt(1, user.getId());
       statement.setInt(2, followeeUser.getId());
@@ -59,7 +59,7 @@ public class RelationDAO {
     List<User> users = new ArrayList<>();
     try {
 
-      query = "select * from relations where follower_id = ?";
+      query = "select * from usr_flw where follower_id = ?";
       statement = dbConn.prepareStatement(query);
       statement.setInt(1, (user.getId()));
       resultSet = statement.executeQuery();

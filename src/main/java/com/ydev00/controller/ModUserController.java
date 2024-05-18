@@ -51,7 +51,12 @@ public class ModUserController {
 
     User user = gson.fromJson(request.body(), User.class);
 
-    UserDAO userDAO = new UserDAO(dbConn);
+    userDAO = new UserDAO(dbConn);
+    user = userDAO.get(user);
+    if(user == null) {
+      response.status(404);
+      return "User not found";
+    }
     user = (User) userDAO.delete(user);
 
     return null;

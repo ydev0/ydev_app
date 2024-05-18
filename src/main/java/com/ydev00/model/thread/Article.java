@@ -2,39 +2,61 @@ package com.ydev00.model.thread;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.sql.Blob;
 import java.util.ArrayList;
 
-public class Article extends Thrd {
-    @SerializedName("markdown")
-    private Blob markdown;
+public class Article {
+  @SerializedName("id")
+  private int id;
 
-    @SerializedName("title")
-    private String title;
+  @SerializedName("markdown")
+  private String markdown;
 
-    public Article() {
-        super();
-    }
+  @SerializedName("title")
+  private String title;
 
-    public Article(int id, String text,  ArrayList<Thrd> thrdList, String title, Blob markdown) {
-        super(id, text, thrdList);
-        this.title = title;
-        this.markdown = markdown;
-    }
+  public Article() {
+    super();
+  }
 
-    public Blob getMarkdown() {
-        return markdown;
-    }
+  public Article(int id ) {
+    this.id = id;
+  }
 
-    public String getTitle() {
-        return title;
-    }
 
-    public void setMarkdown(Blob markdown) {
-        this.markdown = markdown;
-    }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+  public Article(String title, String markdown) {
+    this.title = title;
+    this.markdown = markdown;
+  }
+
+  public int getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  public String getMarkdown() {
+    return markdown;
+  }
+
+  public void setMarkdown(String markdown) {
+    this.markdown = markdown;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public String toString() {
+    return "Article {" +
+            ", title='" + title + '\'' +
+            ", markdown='" + markdown + '\'' +
+            '}';
+  }
 }

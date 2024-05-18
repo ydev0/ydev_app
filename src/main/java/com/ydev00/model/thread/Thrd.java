@@ -11,16 +11,15 @@ public class Thrd {
     @SerializedName("text")
     private String text;
 
-    @SerializedName("thrdList")
-    private ArrayList<Thrd> thrdList = new ArrayList<>();
+    @SerializedName("article")
+    private Article article;
 
     public Thrd() {
     }
 
-    public Thrd(int id, String text, ArrayList<Thrd> thrdList) {
+    public Thrd(int id, String text) {
         this.id = id;
         this.text = text;
-        this.thrdList = thrdList;
     }
 
     public int getId() {
@@ -29,6 +28,10 @@ public class Thrd {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public Article getArticle() {
+        return article;
     }
 
 
@@ -40,11 +43,15 @@ public class Thrd {
         this.text = text;
     }
 
-    public ArrayList<Thrd> getThrdList() {
-        return thrdList;
+    public void setArticle(Article article) {
+        this.article = article;
     }
 
-    public void setThrdList(ArrayList<Thrd> thrdList) {
-        this.thrdList = thrdList;
+    public String toString() {
+        return "Thrd {" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", article='" + article+ '\'' +
+                '}';
     }
 }

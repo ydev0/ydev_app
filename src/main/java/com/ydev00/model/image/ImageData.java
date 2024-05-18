@@ -34,13 +34,6 @@ public class ImageData {
         isClosed = closed;
     }
 
-    public String toString() {
-        return "ImageData {" +
-                "binaryData=" + binaryData +
-                ", isClosed=" + isClosed +
-                '}';
-    }
-
     public ImageData blobToImageData(Blob blob) {
         List<Integer> binaryData = new ArrayList<>();
         try {
@@ -55,7 +48,6 @@ public class ImageData {
         return new ImageData(binaryData, false);
     }
 
-
     public Blob toBlob() {
         try {
             int[] intArray = this.getBinaryData().stream().mapToInt(i -> i).toArray();
@@ -69,4 +61,10 @@ public class ImageData {
         return null;
     }
 
+    public String toString() {
+        return "ImageData {" +
+                "binaryData=" + binaryData +
+                ", isClosed=" + isClosed +
+                '}';
+    }
 }

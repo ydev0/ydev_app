@@ -110,27 +110,25 @@ public class UserDAO implements DAO{
 
   public List<User> listUsers(){
     List<User> users = new ArrayList<User>();
-
     try {
       query = "select * from user";
       statement = dbConn.prepareStatement(query);
       resultSet = statement.executeQuery();
 
+      User user = new User();
       while(resultSet.next()) {
-        User user = new User();
         user.setId(resultSet.getInt("id"));
         user.setUsername(resultSet.getString("username"));
         user.setEmail(resultSet.getString("email"));
         user.setPassword("");
-
-        ImageDAO imageDAO = new ImageDAO(dbConn);
-        Image image = (Image)imageDAO.get(new Image(resultSet.getInt("pfp_id")));
-
-        user.setProfilePic(image);
+        user.setRoot(resultSet.getBoolean("root"));
+        user.setProfilePic(new Image(resultSet.getInt("pfp_id")));
+        user.setAuth(false);
         users.add(user);
       }
     } catch (Exception ex) {
       System.err.println("Could not get users: "+ex.getMessage());
+      return null;
     }
     return users;
   }
