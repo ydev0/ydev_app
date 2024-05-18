@@ -1,4 +1,4 @@
-package com.ydev00.model;
+package com.ydev00.model.image;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.InputStream;

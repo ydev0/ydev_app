@@ -1,17 +1,12 @@
 package com.ydev00.controller;
 
 import com.google.gson.Gson;
-import com.ydev00.dao.ImageDAO;
-import org.eclipse.jetty.http.HttpStatus;
 import spark.Route;
 
-import com.ydev00.model.User;
-import com.ydev00.model.Image;
-import com.ydev00.model.Thrd;
-import com.ydev00.model.ModUser;
+import com.ydev00.model.user.User;
+import com.ydev00.model.thread.Thrd;
 import com.ydev00.dao.ThreadDAO;
 import com.ydev00.dao.UserDAO;
-import com.ydev00.util.Message;
 
 import java.sql.Connection;
 

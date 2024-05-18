@@ -1,4 +1,4 @@
-package com.ydev00.model;
+package com.ydev00.model.thread;
 
 import com.google.gson.annotations.SerializedName;
 

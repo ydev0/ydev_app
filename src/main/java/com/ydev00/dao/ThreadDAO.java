@@ -1,8 +1,8 @@
 package com.ydev00.dao;
 
-import com.ydev00.model.Article;
-import com.ydev00.model.Thrd;
-import com.ydev00.model.User;
+import com.ydev00.model.thread.Article;
+import com.ydev00.model.thread.Thrd;
+import com.ydev00.model.user.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -1,16 +1,14 @@
 package com.ydev00.controller;
 
-import com.ydev00.model.Article;
 import spark.Route;
 
 import com.google.gson.Gson;
 
-import com.ydev00.model.Thrd;
-import com.ydev00.model.User;
+import com.ydev00.model.thread.Thrd;
+import com.ydev00.model.user.User;
 import com.ydev00.dao.ThreadDAO;
 
 import java.util.List;
-import java.util.ArrayList;
 
 import java.sql.Connection;
 

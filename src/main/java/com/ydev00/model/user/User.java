@@ -1,6 +1,6 @@
-package com.ydev00.model;
+package com.ydev00.model.user;
 
-import com.google.gson.annotations.SerializedName;
+import com.ydev00.model.image.Image;
 
 public class User extends UserAbstract {
 

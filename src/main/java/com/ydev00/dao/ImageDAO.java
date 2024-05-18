@@ -1,7 +1,7 @@
 package com.ydev00.dao;
 
-import com.ydev00.model.Image;
-import com.ydev00.model.ImageData;
+import com.ydev00.model.image.Image;
+import com.ydev00.model.image.ImageData;
 
 import java.sql.*;
 import java.util.ArrayList;

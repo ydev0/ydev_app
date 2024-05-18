@@ -1,8 +1,6 @@
-package com.ydev00.model;
+package com.ydev00.model.image;
 
 import com.google.gson.annotations.SerializedName;
-import java.sql.Blob;
-import com.ydev00.model.ImageData;
 
 public class Image {
   @SerializedName("id")

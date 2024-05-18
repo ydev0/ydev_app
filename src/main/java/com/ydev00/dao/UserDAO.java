@@ -1,9 +1,8 @@
 package com.ydev00.dao;
 
-import com.ydev00.model.User;
-import com.ydev00.dao.ImageDAO;
-import com.ydev00.model.Image;
-import com.ydev00.model.UserAbstract;
+import com.ydev00.model.user.User;
+import com.ydev00.model.image.Image;
+import com.ydev00.model.user.UserAbstract;
 
 import java.sql.*;
 

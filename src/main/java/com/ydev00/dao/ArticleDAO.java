@@ -1,6 +1,6 @@
 package com.ydev00.dao;
 
-import com.ydev00.model.Article;
+import com.ydev00.model.thread.Article;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
