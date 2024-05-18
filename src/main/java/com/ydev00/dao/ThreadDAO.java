@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ThreadDAO implements DAO{
-  private Connection dbConn;
+  private final Connection dbConn;
   private String query;
   private PreparedStatement statement;
   private ResultSet resultSet;
@@ -32,8 +32,8 @@ public class ThreadDAO implements DAO{
       if(thrd.getArticle() != null) {
         ArticleDAO articleDAO = new ArticleDAO(dbConn);
         Article article = (Article) articleDAO.create(thrd, id);
+        thrd.setArticle(article);
         query = "insert into thread (text, usr_id, article_id) values (?, ?, ?); ";
-
       }
       statement = dbConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
       statement.setString(1, thrd.getText());
@@ -80,7 +80,7 @@ public class ThreadDAO implements DAO{
   }
 
   @Override
-  public List<?> getAll() {
+  public List<Thrd> getAll() {
     List<Thrd> thrdList = new ArrayList<>();
     try {
       query = "select * from thread;";
@@ -123,6 +123,7 @@ public class ThreadDAO implements DAO{
         }
         thrdList.add(thrd);
       }
+      System.out.println(thrdList.size());
     } catch (Exception ex) {
       System.err.println("Could not get threads: "+ex.getMessage());
       return null;

@@ -66,16 +66,10 @@ public class ThreadController {
   public Route getThreadsByUser = (request, response) -> {
     response.type("application.json");
 
-    if (request.headers("username") == null) {
-      response.status(HttpStatus.FAILED_DEPENDENCY_424);
-      Message message = new Message("Error", "User not logged in");
-      return gson.toJson(message, Message.class);
-    }
-
     List<Thrd> thrdList;
 
     UserDAO userDAO = new UserDAO(dbConn);
-    User user = (User)userDAO.getByUsername(request.headers("username"));
+    User user = (User)userDAO.getByUsername(new User(request.params("username")));
 
     if (user == null) {
       response.status(HttpStatus.NOT_FOUND_404);
@@ -84,7 +78,7 @@ public class ThreadController {
     }
 
     ThreadDAO threadDAO = new ThreadDAO(dbConn);
-    thrdList = (List<Thrd>) threadDAO.getByUser(user);
+    thrdList = threadDAO.getByUser(user);
 
     if (thrdList.isEmpty()) {
       response.status(HttpStatus.NOT_FOUND_404);
@@ -92,6 +86,7 @@ public class ThreadController {
       return gson.toJson(message, Message.class);
     }
 
+    response.status(HttpStatus.OK_200);
     return gson.toJson(thrdList, Thrd.class);
   };
 
@@ -102,7 +97,7 @@ public class ThreadController {
 
     ThreadDAO threadDAO = new ThreadDAO(dbConn);
 
-    thrdList = (List<Thrd>) threadDAO.getAll();
+    thrdList = threadDAO.getAll();
 
     if(thrdList.isEmpty()) {
       return gson.toJson(new Thrd());
