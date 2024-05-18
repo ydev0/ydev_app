@@ -28,17 +28,17 @@ public class Server {
       redirect.get("/home", "/home/");
 
       path("/user", () -> {
+        post("/signup", userController.signup);
         post("/login", "application.json", userController.login);
-        post("/signup", "application.json", userController.signup);
         get("/:username", "application.json", userController.getByUsername);
-        get("/:username/t/:id", "application.json", threadController.getThreadsByUser);
+        post("/logout", "application.json", userController.logout);
 
+        get("/:username/t/:id", "application.json", threadController.getThreadsByUser);
         post("/:username/follow", "application.json", userController.follow);
         post("/:username/unfollow", "application.json", userController.unfollow);
         post("/:username/like", "application.json", userController.like);
         post("/:username/unlike", "application.json", userController.unlike);
 
-        post("/logout", "application.json", userController.logout);
       });
 
       path("/home", () -> {
@@ -54,7 +54,6 @@ public class Server {
       });
 
       path("/mod", () -> {
-        post("/login", "application.json", modUserController.login);
         get("/:username", "application.json", userController.getByUsername);
         get("/:username/t/:id", "application.json",threadController.getThreadsByUser);
       });

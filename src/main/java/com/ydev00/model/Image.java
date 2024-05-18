@@ -2,6 +2,8 @@ package com.ydev00.model;
 
 import com.google.gson.annotations.SerializedName;
 import java.sql.Blob;
+import com.ydev00.model.ImageData;
+
 public class Image {
   @SerializedName("id")
   private int id;
@@ -10,7 +12,7 @@ public class Image {
   private String type;
 
   @SerializedName("image")
-  private Blob image;
+  private ImageData image;
 
   public Image() {}
 
@@ -18,12 +20,12 @@ public class Image {
     this.id = id;
   }
 
-  public Image(String type, Blob image) {
+  public Image(String type, ImageData image) {
     this.type = type;
     this.image = image;
   }
 
-  public Image(int id, String type, Blob image, int width, int height) {
+  public Image(int id, String type, ImageData image, int width, int height) {
     this.id = id;
     this.type = type;
     this.image = image;
@@ -45,11 +47,19 @@ public class Image {
     this.type = type;
   }
 
-  public Blob getImage() {
+  public ImageData getImage() {
     return image;
   }
 
-  public void setImage(Blob image) {
+  public void setImage(ImageData image) {
     this.image = image;
+  }
+
+  public String toString() {
+    return "Image {" +
+            "id=" + id +
+            ", type='" + type + '\'' +
+            ", image='" + image + '\'' +
+            '}';
   }
 }

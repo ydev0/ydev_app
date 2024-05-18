@@ -1,10 +1,9 @@
 package com.ydev00.dao;
 
 import com.ydev00.model.Image;
+import com.ydev00.model.ImageData;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,11 +25,14 @@ public class ImageDAO implements DAO{
         return get(new Image(0));
       }
 
-      query = "insert into image (type, image) values (?, ?) returning  id";
-      statement = dbConn.prepareStatement(query);
+      query = "insert into image (type, image) values (?, ?)";
+      statement = dbConn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
       statement.setString(1, image.getType());
-      statement.setBlob(2, image.getImage());
-      statement.executeQuery();
+
+      Blob blob = image.getImage().toBlob();
+      statement.setBlob(2, blob);
+
+      statement.execute();
       resultSet = statement.getGeneratedKeys();
 
       if(resultSet.next()) {
@@ -55,7 +57,8 @@ public class ImageDAO implements DAO{
       if(resultSet.next()) {
         image.setId(resultSet.getInt("id"));
         image.setType(resultSet.getString("type"));
-        image.setImage(resultSet.getBlob("image"));
+        ImageData imageData = new ImageData();
+        image.setImage(imageData.blobToImageData((resultSet.getBlob("image"))));
         return image;
       }
     } catch (Exception ex) {
@@ -76,7 +79,7 @@ public class ImageDAO implements DAO{
         Image image = new Image();
         image.setId(resultSet.getInt("id"));
         image.setType(resultSet.getString("type"));
-        image.setImage(resultSet.getBlob("image"));
+        image.setImage(image.getImage().blobToImageData(resultSet.getBlob("image")));
         images.add(image);
       }
     }

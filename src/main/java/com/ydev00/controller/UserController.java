@@ -3,12 +3,11 @@ package com.ydev00.controller;
 import com.ydev00.dao.RelationDAO;
 import com.ydev00.model.Thrd;
 import spark.Route;
-import static spark.Spark.*;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import com.ydev00.model.User;
+import com.ydev00.model.ModUser;
 import com.ydev00.model.Image;
 import com.ydev00.dao.UserDAO;
 import com.ydev00.dao.ImageDAO;
@@ -21,6 +20,7 @@ public class UserController {
   private Connection dbConn;
   private Gson gson;
   private UserDAO userDAO;
+  private ImageDAO imageDAO;
 
 
   public UserController() {}
@@ -29,43 +29,19 @@ public class UserController {
     this.dbConn = dbConn;
     this.gson = new Gson();
     this.userDAO = new UserDAO(dbConn);
-  } 
-
-
-  public Route login = (request, response) -> {
-    response.type("application.json");
-
-    User user =  gson.fromJson(request.body(), User.class);
-
-    if (user == null || user.getEmail() == null || user.getPassword() == null) {
-      response.status(HttpStatus.FAILED_DEPENDENCY_424);
-      Message message = new Message("Error", "Wrong input");
-      return gson.toJson(message, Message.class);
-    }
-
-    user = (User) userDAO.get(user);
-
-    if (user == null) {
-      response.status(HttpStatus.FAILED_DEPENDENCY_424);
-      Message message = new Message("Error", "Not logging in");
-      return gson.toJson(message, Message.class);
-    }
-
-    ImageDAO imageDAO = new ImageDAO(dbConn);
-    Image image = imageDAO.get(user.getProfilePic());
-    user.setProfilePic(image);
-
-    response.status(HttpStatus.OK_200);
-    return gson.toJson(user, User.class);
-  };
+    this.imageDAO = new ImageDAO(dbConn);
+  }
 
   public Route signup = (request, response) -> {
     response.type("application.json");
 
     User user = gson.fromJson(request.body(), User.class);
 
-    System.out.println(user.getProfilePic().getImage().getBinaryStream());
-    System.out.println(user.getProfilePic());
+    if (user == null || user.getEmail() == null || user.getPassword() == null || user.getUsername() == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "Incomplete input data");
+      return gson.toJson(message, Message.class);
+    }
 
     if ((User) userDAO.getByUsername(user) != null) {
       response.status(HttpStatus.FAILED_DEPENDENCY_424);
@@ -79,6 +55,41 @@ public class UserController {
     return gson.toJson(user, User.class);
   };
 
+  public Route login = (request, response) -> {
+    response.type("application.json");
+
+    User user =  gson.fromJson(request.body(), User.class);
+
+    if (user == null || user.getEmail() == null || user.getPassword() == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "Wrong input");
+      return gson.toJson(message, Message.class);
+    }
+
+    user = userDAO.get(user);
+
+    if (user == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "Not logging in");
+      return gson.toJson(message, Message.class);
+    }
+
+    Image image = imageDAO.get(user.getProfilePic());
+
+    if(image != null)
+      user.setProfilePic(image);
+
+    response.status(HttpStatus.OK_200);
+    user.setAuth(true);
+
+    if(user.isRoot()) {
+      return gson.toJson(user, ModUser.class);
+    }
+
+    return gson.toJson(user, User.class);
+  };
+
+
   public Route getByUsername = (request, response) -> {
     response.type("application.json");
 
@@ -90,9 +101,9 @@ public class UserController {
       return gson.toJson(message, Message.class);
     }
 
-    ImageDAO imageDAO = new ImageDAO(dbConn);
     Image image = imageDAO.get(user.getProfilePic());
-    user.setProfilePic(image);
+    if(image != null)
+      user.setProfilePic(image);
 
     response.status(HttpStatus.OK_200);
     return gson.toJson(user, User.class);

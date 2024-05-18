@@ -21,6 +21,9 @@ public abstract class UserAbstract {
   @SerializedName("auth")
   private boolean auth;
 
+  @SerializedName("root")
+  private boolean root;
+
   public void setId(int id) {
     this.id = id;
   }
@@ -45,6 +48,10 @@ public abstract class UserAbstract {
     this.auth = auth;
   }
 
+  public void setRoot(boolean root) {
+    this.root = root;
+  }
+
   public int getId() {
     return id;
   }
@@ -52,7 +59,6 @@ public abstract class UserAbstract {
   public Image getProfilePic() {
     return profilePic;
   }
-
 
   public String getUsername(){
     return username;
@@ -64,5 +70,13 @@ public abstract class UserAbstract {
 
   public String getPassword() {
     return password;
+  }
+
+  public boolean getAuth() {
+    return auth;
+  }
+
+  public boolean isRoot() {
+    return root;
   }
 }
