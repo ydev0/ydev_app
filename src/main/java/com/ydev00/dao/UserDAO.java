@@ -9,7 +9,7 @@ import java.sql.*;
 import java.util.*;
 
 public class UserDAO implements DAO{
-  private Connection dbConn;
+  private final Connection dbConn;
   private String query;
   private PreparedStatement statement ;
   private ResultSet resultSet;
@@ -26,7 +26,7 @@ public class UserDAO implements DAO{
       Image image = new Image(user.getProfilePic().getType(), user.getProfilePic().getImage());
 
 
-      image = (Image) imageDAO.create(image);
+      image = imageDAO.create(image);
       user.setProfilePic(image);
 
       statement = dbConn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -84,7 +84,7 @@ public class UserDAO implements DAO{
     return user;
   }
 
-  public Object getByUsername(Object obj) throws SQLException {
+  public Object getByUsername(Object obj) {
     try {
       User user =  (User) obj;
       query = "SELECT * FROM user WHERE username= ?;";
@@ -109,13 +109,14 @@ public class UserDAO implements DAO{
   }
 
   public List<User> listUsers(){
-    List<User> users = new ArrayList<User>();
+    User user = new User();
+    List<User> users = new ArrayList<>();
     try {
       query = "select * from user";
       statement = dbConn.prepareStatement(query);
-      resultSet = statement.executeQuery();
+      statement.execute();
+      resultSet = statement.getResultSet();
 
-      User user = new User();
       while(resultSet.next()) {
         user.setId(resultSet.getInt("id"));
         user.setUsername(resultSet.getString("username"));
@@ -133,17 +134,26 @@ public class UserDAO implements DAO{
     return users;
   }
 
-  public Object delete(Object obj) {
+  public boolean delete(User user) {
     try {
-      User user = (User) obj;
+      user = get(user);
+      if (user == null) {
+        throw new Exception("User not found");
+      }
+
+      ImageDAO imageDAO = new ImageDAO(dbConn);
+      if(imageDAO.delete(user.getProfilePic()))
+        user.setProfilePic(null);
+
       query = "delete from user where id = ?";
       statement = dbConn.prepareStatement(query);
       statement.setInt(1, user.getId());
-      resultSet = statement.executeQuery();
+      statement.execute();
+      resultSet = statement.getGeneratedKeys();
 
     } catch (Exception ex) {
       System.err.println("User not found: "+ex.getMessage());
     }
-    return null;
+    return true;
   }
 }

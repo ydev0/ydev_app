@@ -1,5 +1,6 @@
 package com.ydev00.controller;
 
+import com.ydev00.dao.RelationDAO;
 import com.ydev00.dao.UserDAO;
 import com.ydev00.util.Message;
 import spark.Route;
@@ -11,6 +12,7 @@ import com.ydev00.model.user.User;
 import com.ydev00.dao.ThreadDAO;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import java.sql.Connection;
 import org.eclipse.jetty.http.HttpStatus;
@@ -18,16 +20,33 @@ import org.eclipse.jetty.http.HttpStatus;
 public class ThreadController {
   private Connection dbConn;
   private Gson gson;
+  private UserDAO userDAO;
+  private ThreadDAO threadDAO;
+  private RelationDAO relationDAO;
 
   public ThreadController(Connection dbConn) {
     this.dbConn = dbConn;
     this.gson = new Gson();
+    this.userDAO = new UserDAO(dbConn);
+    this.threadDAO = new ThreadDAO(dbConn);
+    this.relationDAO = new RelationDAO(dbConn);
   }
 
   public Route loadFeed = (request, response) -> {
     response.type("application.json");
 
-    return gson.toJson(new Thrd());
+    List<Thrd> feed = new ArrayList<>();
+
+    List<User> followees = relationDAO.getFollowees(new User(request.headers("username")));
+
+    for(User followee : followees) {
+      feed.addAll(threadDAO.getByUser(followee));
+      if(feed.size() >= 100) {
+        break;
+      }
+    }
+
+    return gson.toJson(feed);
   };
 
   public Route create = (request, response) -> {
@@ -41,7 +60,6 @@ public class ThreadController {
 
     Thrd thrd = gson.fromJson(request.body(), Thrd.class);
 
-    UserDAO userDAO = new UserDAO(dbConn);
     User user = (User) userDAO.getByUsername(new User(request.headers("username")));
 
     if(user == null) {
@@ -68,7 +86,6 @@ public class ThreadController {
 
     List<Thrd> thrdList;
 
-    UserDAO userDAO = new UserDAO(dbConn);
     User user = (User)userDAO.getByUsername(new User(request.params("username")));
 
     if (user == null) {
@@ -87,23 +104,29 @@ public class ThreadController {
     }
 
     response.status(HttpStatus.OK_200);
-    return gson.toJson(thrdList, Thrd.class);
+    return gson.toJson(thrdList);
   };
 
   public Route loadThread = (request, response) -> {
     response.type("application.json");
 
-    List<Thrd> thrdList;
-
-    ThreadDAO threadDAO = new ThreadDAO(dbConn);
-
-    thrdList = threadDAO.getAll();
-
-    if(thrdList.isEmpty()) {
-      return gson.toJson(new Thrd());
+    if(request.params("id") == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "Thread ID not provided");
+      return gson.toJson(message, Message.class);
     }
 
-    return gson.toJson(thrdList, List.class);
+    Thrd thrd = new Thrd(Integer.parseInt(request.params("id")));
+    thrd = (Thrd) threadDAO.get(thrd);
+
+    if(thrd == null) {
+      response.status(HttpStatus.NOT_FOUND_404);
+      Message message = new Message("Error", "Thread not found");
+      return gson.toJson(message, Message.class);
+    }
+
+    response.status(HttpStatus.OK_200);
+    return gson.toJson(thrd);
   };
 
 }

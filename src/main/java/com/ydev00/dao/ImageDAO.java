@@ -88,4 +88,17 @@ public class ImageDAO implements DAO{
     }
     return images;
   }
+
+  public boolean delete(Image image) {
+    try {
+      query = "delete from image where id = ?";
+      statement = dbConn.prepareStatement(query);
+      statement.setInt(1, image.getId());
+      statement.execute();
+      return true;
+    } catch (Exception ex) {
+      System.err.println("Image not deleted: "+ex.getMessage());
+      return false;
+    }
+  }
 }

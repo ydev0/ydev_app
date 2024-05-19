@@ -27,36 +27,36 @@ public class Server {
       redirect.get("/", "/home/");
       redirect.get("/home", "/home/");
 
-      get("/getAll", userController.getAll);
+      get("/getAll", userController.getAll); // done
 
       path("/user", () -> {
-        post("/signup", userController.signup);
-        post("/login", "application.json", userController.login);
-        get("/:username", "application.json", userController.getByUsername);
-        post("/logout", "application.json", userController.logout);
+        post("/signup", userController.signup); // done
+        post("/login", "application.json", userController.login); // done
+        get("/:username", "application.json", userController.getByUsername); // done
+        post("/logout", "application.json", userController.logout); // done
 
-        get("/:username/t", "application.json", threadController.getThreadsByUser);
-        post("/:username/follow", "application.json", userController.follow);
-        post("/:username/unfollow", "application.json", userController.unfollow);
+        get("/:username/t", "application.json", threadController.getThreadsByUser); // done
+        post("/:username/follow", "application.json", userController.follow); // done
+        post("/:username/unfollow", "application.json", userController.unfollow); // done
         post("/:username/like", "application.json", userController.like);
         post("/:username/unlike", "application.json", userController.unlike);
+        get(":username/followers", "application.json", userController.getFollowers);
+        get(":username/followees", "application.json", userController.getFollowees);
       });
 
       path("/home", () -> {
-        get("/", "application.json" , threadController.loadFeed);
-
+        get("/", "application.json" , threadController.loadFeed); // maybe done
         path("/t", () -> {
           get("/:id", "application.json", threadController.loadThread);
-          post("/new", "application.json", threadController.create);
+          post("/new", "application.json", threadController.create); // done
         });
-
         post("/a/new", "application.json", threadController.create);
       });
 
       path("/mod", () -> {
         get("/:username", "application.json", userController.getByUsername);
-        get("/:username/t/:id", "application.json",threadController.getThreadsByUser);
       });
+
 
       if(dbConn != null)
         System.out.println("[Server Connected]");

@@ -19,16 +19,14 @@ public class ArticleDAO {
     this.dbConn = dbConn;
   }
 
-  public Object create(Object obj, int id) {
+  public Object create(Object obj) {
     Article article = (Article) obj;
     try {
       query = "insert into article(title, markdown) values (?, ?);";
       statement = dbConn.prepareStatement(query);
-      statement.setString(2, article.getTitle());
-      statement.setString(3, article.getMarkdown());
-      statement.setInt(4, id);
+      statement.setString(1, article.getTitle());
+      statement.setString(2, article.getMarkdown());
       statement.execute();
-
       resultSet = statement.getGeneratedKeys();
 
       if(resultSet.next()) {
@@ -36,6 +34,7 @@ public class ArticleDAO {
       }
     } catch (Exception ex) {
       System.err.println("Could not create article: "+ex.getMessage());
+      return null;
     }
     return article;
   }
@@ -46,7 +45,8 @@ public class ArticleDAO {
       query = "select * from article where id = ?";
       statement = dbConn.prepareStatement(query);
       statement.setInt(1, article.getId());
-      resultSet = statement.executeQuery();
+      statement.execute();
+      resultSet = statement.getResultSet();
 
       if(resultSet.next()) {
         article.setTitle(resultSet.getString("title"));

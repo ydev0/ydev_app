@@ -115,15 +115,15 @@ public class UserController {
   public Route getAll = (request, response) -> {
     response.type("application.json");
 
-    List<User> lista = userDAO.listUsers();
+    List<User> users = userDAO.listUsers();
 
-    if(lista == null) {
+    if(users == null) {
       response.status(HttpStatus.FAILED_DEPENDENCY_424);
       Message message = new Message("Error", "wtf");
       return gson.toJson(message, Message.class);
     }
 
-    return gson.toJson(lista,User.class);
+    return gson.toJson(users);
   };
 
   public Route follow = (request, response) -> {
@@ -135,8 +135,7 @@ public class UserController {
       return gson.toJson(message, Message.class);
     }
 
-    relationDAO.follow(request.params("username"), request.headers("username"));
-
+    relationDAO.follow(request.headers("username"), request.params("username"));
     return "Followed user +" + request.params("username");
   };
 
@@ -149,13 +148,11 @@ public class UserController {
       return gson.toJson(message, Message.class);
     }
 
-    User user = gson.fromJson(request.body(), User.class);
-
-    relationDAO.unfollow(request.params("username"), request.headers("username"));
-
-    return "Unfollowed user +" +user.getUsername();
+    relationDAO.unfollow(request.headers("username"), request.params("username"));
+    return "Unfollowed user +" +request.params("username");
   };
 
+  // TODO
   public Route like = (request, response) -> {
     response.type("application.json");
 
@@ -172,6 +169,7 @@ public class UserController {
     return "Liked post +" +thrd.getId();
   };
 
+  // TODO
   public Route unlike = (request, response) -> {
     response.type("application.json");
 
@@ -188,6 +186,7 @@ public class UserController {
     return "Unliked post +" + thrd.getId();
   };
 
+  // TEST
   public Route logout = (request, response) -> {
     response.type("application.json");
 
@@ -206,6 +205,62 @@ public class UserController {
     }
 
     user.setAuth(false);
-    return "Logged user out";
+    return gson.toJson(user, User.class);
+  };
+
+  public Route getFollowers = (request, response) -> {
+    response.type("application.json");
+
+    if(request.headers("auth") == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "Not logged in");
+      return gson.toJson(message, Message.class);
+    }
+
+    User user = (User) userDAO.getByUsername(new User(request.headers("username")));
+
+    if(user == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "User not found");
+      return gson.toJson(message, Message.class);
+    }
+
+    List<User> followers = relationDAO.getFollowers(user);
+
+    if(followers == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "Could not get followers");
+      return gson.toJson(message, Message.class);
+    }
+
+    return gson.toJson(followers);
+  };
+
+  public Route getFollowees = (request, response) -> {
+    response.type("application.json");
+
+    if(request.headers("auth") == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "Not logged in");
+      return gson.toJson(message, Message.class);
+    }
+
+    User user = (User) userDAO.getByUsername(new User(request.params("username")));
+
+    if(user == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "User not found");
+      return gson.toJson(message, Message.class);
+    }
+
+    List<User> followees = relationDAO.getFollowees(user);
+
+    if(followees == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "Could not get followees");
+      return gson.toJson(message, Message.class);
+    }
+
+    return gson.toJson(followees);
   };
 }

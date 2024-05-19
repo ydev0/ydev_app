@@ -1,6 +1,9 @@
 package com.ydev00.controller;
 
 import com.google.gson.Gson;
+import com.ydev00.model.user.ModUser;
+import com.ydev00.util.Message;
+import org.eclipse.jetty.http.HttpStatus;
 import spark.Route;
 
 import com.ydev00.model.user.User;
@@ -21,12 +24,12 @@ public class ModUserController {
     this.userDAO = new UserDAO(dbConn);
   }
 
-
-
   public Route deletePost = (request, response) -> {
     response.type("application/json");
 
-    if(request.headers("root" ) == null) {
+    ModUser user = (ModUser)userDAO.get(new User(request.headers("username")));
+
+    if(user.isRoot())  {
       response.status(403);
       return "Forbidden";
     }
@@ -44,7 +47,9 @@ public class ModUserController {
   public Route deleteUser = (request, response) -> {
     response.type("application/json");
 
-    if(request.headers("root" ) == null) {
+    ModUser root = (ModUser)userDAO.get(new User(request.headers("username")));
+
+    if(!root.isRoot())  {
       response.status(403);
       return "Forbidden";
     }
@@ -52,14 +57,22 @@ public class ModUserController {
     User user = gson.fromJson(request.body(), User.class);
 
     userDAO = new UserDAO(dbConn);
-    user = userDAO.get(user);
+    user= userDAO.get(user);
+
     if(user == null) {
       response.status(404);
       return "User not found";
     }
-    user = (User) userDAO.delete(user);
 
-    return null;
+    if(userDAO.delete(user)) {
+      user = null;
+      response.status(HttpStatus.OK_200);
+      return gson.toJson(user);
+    }
+
+    response.status(HttpStatus.INTERNAL_SERVER_ERROR_500);
+    Message message = new Message("Error", "Could not delete user");
+    return gson.toJson(message, Message.class);
   };
 
 }
