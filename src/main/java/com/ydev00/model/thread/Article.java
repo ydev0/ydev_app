@@ -2,8 +2,6 @@ package com.ydev00.model.thread;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
-
 public class Article {
   @SerializedName("id")
   private int id;
@@ -21,8 +19,6 @@ public class Article {
   public Article(int id ) {
     this.id = id;
   }
-
-
 
   public Article(String title, String markdown) {
     this.title = title;

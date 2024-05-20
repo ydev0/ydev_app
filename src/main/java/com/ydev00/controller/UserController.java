@@ -163,13 +163,19 @@ public class UserController {
     }
 
     Thrd thrd = gson.fromJson(request.body(), Thrd.class);
+    User user = (User) userDAO.getByUsername(new User(request.headers("username")));
 
-    relationDAO.like(thrd.getId(), request.headers("username"));
+    if(thrd == null || user == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "Wrong input");
+      return gson.toJson(message, Message.class);
+    }
 
-    return "Liked post +" +thrd.getId();
+    if(relationDAO.like(thrd, user))
+      return "Liked post +" +thrd.getId();
+    return "Could not like post +" +thrd.getId();
   };
 
-  // TODO
   public Route unlike = (request, response) -> {
     response.type("application.json");
 
@@ -180,13 +186,19 @@ public class UserController {
     }
 
     Thrd thrd = gson.fromJson(request.body(), Thrd.class);
+    User user = (User) userDAO.getByUsername(new User(request.headers("username")));
 
-    relationDAO.unlike(thrd.getId(), request.headers("username"));
+    if(thrd == null || user == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "Wrong input");
+      return gson.toJson(message, Message.class);
+    }
 
-    return "Unliked post +" + thrd.getId();
+    if(relationDAO.unlike(thrd, user))
+      return "Unliked post +" + thrd.getId();
+    return "Could not unlike post +" + thrd.getId();
   };
 
-  // TEST
   public Route logout = (request, response) -> {
     response.type("application.json");
 
@@ -211,7 +223,7 @@ public class UserController {
   public Route getFollowers = (request, response) -> {
     response.type("application.json");
 
-    if(request.headers("auth") == null) {
+    if(!request.headers("auth").equals("true") || request.headers("username") == null){
       response.status(HttpStatus.FAILED_DEPENDENCY_424);
       Message message = new Message("Error", "Not logged in");
       return gson.toJson(message, Message.class);
@@ -232,6 +244,9 @@ public class UserController {
       Message message = new Message("Error", "Could not get followers");
       return gson.toJson(message, Message.class);
     }
+
+    if (followers.isEmpty())
+      return "No followers";
 
     return gson.toJson(followers);
   };
@@ -260,6 +275,9 @@ public class UserController {
       Message message = new Message("Error", "Could not get followees");
       return gson.toJson(message, Message.class);
     }
+
+    if(followees.isEmpty())
+      return "No followees";
 
     return gson.toJson(followees);
   };

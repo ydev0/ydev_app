@@ -52,7 +52,7 @@ public class ThreadController {
   public Route create = (request, response) -> {
     response.type("application.json");
 
-    if(request.headers("username") == null || request.headers("auth") == null) {
+    if(request.headers("username") == null || !request.headers("auth").equals("true") ) {
       response.status(HttpStatus.FAILED_DEPENDENCY_424);
       Message message = new Message("Error", "User not logged in");
       return gson.toJson(message, Message.class);

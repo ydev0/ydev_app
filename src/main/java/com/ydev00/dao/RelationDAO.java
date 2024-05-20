@@ -1,6 +1,7 @@
 package com.ydev00.dao;
 
 import com.ydev00.model.user.User;
+import com.ydev00.model.thread.Thrd;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -93,8 +94,8 @@ public class RelationDAO {
   public List<User> getFollowees (Object obj) {
     User user = (User)obj;
     List<User> users = new ArrayList<>();
-    try {
 
+    try {
       query = "select * from usr_flw where flw_id = ?";
       statement = dbConn.prepareStatement(query);
       statement.setInt(1, (user.getId()));
@@ -112,11 +113,33 @@ public class RelationDAO {
     return users;
   }
 
-  public User like (Object obj, String username) {
-    return null;
+  public boolean like (Thrd thrd, User user) {
+    try {
+      query = "insert into usr_lk(thrd_id, usr_id) values (?, ?)";
+      statement = dbConn.prepareStatement(query);
+      statement.setInt(1, thrd.getId());
+      statement.setInt(2, user.getId());
+      statement.execute();
+    }
+    catch (Exception ex) {
+      System.err.println("Could not like: "+ex.getMessage());
+      return false;
+    }
+    return true;
   }
 
-  public User unlike (Object obj, String username) {
-    return null;
+  public boolean unlike (Thrd thrd, User user) {
+    try {
+      query = "delete from usr_lk where thrd_id = ? and usr_id = ?;";
+      statement = dbConn.prepareStatement(query);
+      statement.setInt(1, thrd.getId());
+      statement.setInt(2, user.getId());
+      statement.execute();
+    }
+    catch (Exception ex) {
+      System.err.println("Could not like: "+ex.getMessage());
+      return false;
+    }
+    return true;
   }
 }

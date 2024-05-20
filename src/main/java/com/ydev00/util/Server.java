@@ -50,7 +50,6 @@ public class Server {
           get("/:id", "application.json", threadController.loadThread);
           post("/new", "application.json", threadController.create); // done
         });
-        post("/a/new", "application.json", threadController.create);
       });
 
       path("/mod", () -> {
