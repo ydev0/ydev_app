@@ -12,7 +12,6 @@ public class Server {
 
   public Server(DBServer dbServer) {
     try {
-      // init server
       port(8080);
       init();
 
@@ -54,8 +53,11 @@ public class Server {
 
       path("/mod", () -> {
         get("/:username", "application.json", userController.getByUsername);
+        path("delete", () -> {
+          post("/user", "application.json", modUserController.deleteUser);
+          post("/thread", "application.json", modUserController.deletePost);
+        });
       });
-
 
       if(dbConn != null)
         System.out.println("[Server Connected]");

@@ -28,18 +28,21 @@ public class ThreadDAO implements DAO{
   public Object create(Object obj, int id) {
     Thrd thrd = (Thrd) obj;
     try {
-      query = "insert into thread (text, usr_id) values (?, ?); ";
-      if(thrd.getArticle() != null) {
-        ArticleDAO articleDAO = new ArticleDAO(dbConn);
-        Article article = (Article) articleDAO.create(thrd);
-        thrd.setArticle(article);
-        query = "insert into thread (text, usr_id, article_id) values (?, ?, ?); ";
-      }
+      query = "insert into thread (text, usr_id, article_id) values (?, ?, ?); ";
+
       statement = dbConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
       statement.setString(1, thrd.getText());
       statement.setInt(2, id);
-      if(thrd.getArticle() != null )
+
+      if(thrd.getArticle() != null) {
+        ArticleDAO articleDAO = new ArticleDAO(dbConn);
+        Article article = (Article) articleDAO.create(new Article(thrd.getArticle().getTitle(), thrd.getArticle().getMarkdown()));
+        thrd.setArticle(article);
         statement.setInt(3, thrd.getArticle().getId());
+      }
+      else
+        statement.setInt(3, 0);
+
       statement.execute();
       resultSet = statement.getGeneratedKeys();
 

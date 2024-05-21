@@ -6,11 +6,11 @@ public class Article {
   @SerializedName("id")
   private int id;
 
-  @SerializedName("markdown")
-  private String markdown;
-
   @SerializedName("title")
   private String title;
+
+  @SerializedName("markdown")
+  private String markdown;
 
   public Article() {
     super();

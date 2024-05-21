@@ -32,33 +32,18 @@ public class ThreadController {
     this.relationDAO = new RelationDAO(dbConn);
   }
 
-  public Route loadFeed = (request, response) -> {
-    response.type("application.json");
-
-    List<Thrd> feed = new ArrayList<>();
-
-    List<User> followees = relationDAO.getFollowees(new User(request.headers("username")));
-
-    for(User followee : followees) {
-      feed.addAll(threadDAO.getByUser(followee));
-      if(feed.size() >= 100) {
-        break;
-      }
-    }
-
-    return gson.toJson(feed);
-  };
-
   public Route create = (request, response) -> {
     response.type("application.json");
 
-    if(request.headers("username") == null || !request.headers("auth").equals("true") ) {
+    if(request.headers("username") == null || !(request.headers("auth").equals("true"))) {
+      System.out.println("User not logged in");
       response.status(HttpStatus.FAILED_DEPENDENCY_424);
       Message message = new Message("Error", "User not logged in");
       return gson.toJson(message, Message.class);
     }
 
     Thrd thrd = gson.fromJson(request.body(), Thrd.class);
+    System.out.println(thrd.toString());
 
     User user = (User) userDAO.getByUsername(new User(request.headers("username")));
 
@@ -79,6 +64,28 @@ public class ThreadController {
     }
 
     return gson.toJson(thrd, Thrd.class);
+  };
+
+  public Route loadFeed = (request, response) -> {
+    response.type("application.json");
+
+    if(request.headers("username") == null || !(request.headers("auth").equals("true"))) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "User not logged in");
+      return gson.toJson(message, Message.class);
+    }
+
+    List<Thrd> feed = new ArrayList<>();
+
+    List<User> followees = relationDAO.getFollowees(new User(request.headers("username")));
+
+    for(User followee : followees) {
+      feed.addAll(threadDAO.getByUser(followee));
+      if(feed.size() >= 100) {
+        break;
+      }
+    }
+    return gson.toJson(feed);
   };
 
   public Route getThreadsByUser = (request, response) -> {

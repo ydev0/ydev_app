@@ -29,8 +29,8 @@ public class ModUserController {
 
     ModUser user = (ModUser)userDAO.get(new User(request.headers("username")));
 
-    if(user.isRoot())  {
-      response.status(403);
+    if(!user.isRoot())  {
+      response.status(HttpStatus.FORBIDDEN_403);
       return "Forbidden";
     }
 
@@ -50,7 +50,7 @@ public class ModUserController {
     ModUser root = (ModUser)userDAO.get(new User(request.headers("username")));
 
     if(!root.isRoot())  {
-      response.status(403);
+      response.status(HttpStatus.FORBIDDEN_403);
       return "Forbidden";
     }
 
@@ -74,5 +74,4 @@ public class ModUserController {
     Message message = new Message("Error", "Could not delete user");
     return gson.toJson(message, Message.class);
   };
-
 }

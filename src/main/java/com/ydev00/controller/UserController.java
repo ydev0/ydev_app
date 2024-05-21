@@ -71,6 +71,7 @@ public class UserController {
 
     user = userDAO.get(user);
 
+
     if (user == null) {
       response.status(HttpStatus.FAILED_DEPENDENCY_424);
       Message message = new Message("Error", "Not logging in");
@@ -83,7 +84,6 @@ public class UserController {
       user.setProfilePic(image);
 
     response.status(HttpStatus.OK_200);
-    user.setAuth(true);
 
     if(user.isRoot()) {
       return gson.toJson(user, ModUser.class);
@@ -152,7 +152,6 @@ public class UserController {
     return "Unfollowed user +" +request.params("username");
   };
 
-  // TODO
   public Route like = (request, response) -> {
     response.type("application.json");
 

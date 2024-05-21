@@ -24,8 +24,6 @@ public class UserDAO implements DAO{
       query = "insert into user (username, email, password, root, pfp_id) values (?, ?, ?, false , ?);";
 
       Image image = new Image(user.getProfilePic().getType(), user.getProfilePic().getImage());
-
-
       image = imageDAO.create(image);
       user.setProfilePic(image);
 
@@ -62,24 +60,29 @@ public class UserDAO implements DAO{
     try {
       query = "SELECT * FROM user WHERE email = ?;";
 
-      statement = dbConn.prepareStatement(query);
+      statement = dbConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
       statement.setString(1, user.getEmail());
-      resultSet = statement.executeQuery();
+      statement.execute();
+      resultSet = statement.getResultSet();
 
       if(resultSet.next()) {
-        if (!(resultSet.getString("password").equals(user.getPassword()))) {
-          System.out.println("Password does not match!");
-          return null;
-        }
-
         user.setId(resultSet.getInt("id"));
         user.setUsername(resultSet.getString("username"));
-        user.setPassword("");
         user.setRoot(resultSet.getBoolean("root"));
         user.setProfilePic(new Image(resultSet.getInt("pfp_id")));
+        user.setAuth(true);
+
+        if (!(resultSet.getString("password").equals(user.getPassword()))) {
+          user.setAuth(false);
+          System.out.println("Password does not match!");
+        }
+
+        user.setPassword("");
+
       }
     } catch (Exception e) {
       System.err.println("User not found! " +e.getMessage());
+      return null;
     }
     return user;
   }

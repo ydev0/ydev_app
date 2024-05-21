@@ -15,7 +15,7 @@ public class RelationDAO {
   private String query;
   private PreparedStatement statement ;
   private ResultSet resultSet;
-  private final UserDAO userDAO;
+  private UserDAO userDAO;
 
   public RelationDAO(Connection dbConn) {
     this.dbConn = dbConn;
