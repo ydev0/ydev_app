@@ -91,7 +91,6 @@ public class UserController {
     return gson.toJson(user, User.class);
   };
 
-
   public Route getByUsername = (request, response) -> {
     response.type("application.json");
 
