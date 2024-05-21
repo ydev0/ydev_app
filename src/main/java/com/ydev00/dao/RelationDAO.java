@@ -142,4 +142,42 @@ public class RelationDAO {
     }
     return true;
   }
+
+  public boolean link (Thrd main, Thrd assoc) {
+    try {
+      query = "insert into thrd_lst(main_id, assoc_id) values (?, ?)";
+      statement = dbConn.prepareStatement(query);
+      statement.setInt(1, main.getId());
+      statement.setInt(2, assoc.getId());
+      statement.execute();
+    }
+    catch (Exception ex) {
+      System.err.println("Could not link: "+ex.getMessage());
+      return false;
+    }
+    return true;
+  }
+
+  public List<Thrd> getLinkedThreads(Thrd thrd) {
+    List<Thrd> thrds = new ArrayList<>();
+    try {
+      query = "select * from thrd_lst where main_id = ?;";
+      statement = dbConn.prepareStatement(query);
+      statement.setInt(1, thrd.getId());
+      statement.execute();
+      resultSet = statement.getResultSet();
+
+      while (resultSet.next()) {
+        Thrd assoc = new Thrd();
+        assoc.setId(resultSet.getInt("assoc_id"));
+        assoc = (Thrd) userDAO.get(assoc);
+        thrds.add(assoc);
+      }
+    }
+    catch (Exception ex) {
+      System.err.println("Could not link: "+ex.getMessage());
+      return null;
+    }
+    return thrds;
+  }
 }

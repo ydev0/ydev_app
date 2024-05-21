@@ -132,8 +132,41 @@ public class ThreadController {
       return gson.toJson(message, Message.class);
     }
 
+    if(request.headers("thrd_id") != null) {
+      List<Thrd> assocThrds = relationDAO.getLinkedThreads(new Thrd(Integer.parseInt(request.headers("thread_id"))));
+      Message message = new Message("Success", "Thread linked");
+      response.status(HttpStatus.OK_200);
+      return gson.toJson(thrd) + "\n" +gson.toJson(message, Message.class);
+    }
+
     response.status(HttpStatus.OK_200);
     return gson.toJson(thrd);
   };
 
+  public Route comment = (request, response) -> {
+    response.type("application.json");
+
+    if(request.headers("username") == null || !(request.headers("auth").equals("true")) || request.headers("thrd_id") == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "User not logged in");
+      return gson.toJson(message, Message.class);
+    }
+
+    Thrd thrd = gson.fromJson(request.body(), Thrd.class);
+    thrd = (Thrd) threadDAO.create(thrd, Integer.parseInt(request.headers("thread_id")));
+
+    if(thrd == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "Could not create thread");
+      return gson.toJson(message, Message.class);
+    }
+
+    if(relationDAO.link(thrd, new Thrd(Integer.parseInt(request.headers("thrd_id"))))) {
+      response.status(HttpStatus.OK_200);
+      Message message = new Message("Success", "Thread linked");
+      return gson.toJson(thrd) + "\n" +gson.toJson(message, Message.class);
+    }
+
+    return gson.toJson(thrd, Thrd.class);
+  };
 }

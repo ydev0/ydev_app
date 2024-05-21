@@ -48,6 +48,7 @@ public class Server {
         path("/t", () -> {
           get("/:id", "application.json", threadController.loadThread);
           post("/new", "application.json", threadController.create); // done
+          post("/comment", "application.json", threadController.comment);
         });
       });
 

@@ -71,7 +71,6 @@ public class UserController {
 
     user = userDAO.get(user);
 
-
     if (user == null) {
       response.status(HttpStatus.FAILED_DEPENDENCY_424);
       Message message = new Message("Error", "Not logging in");
