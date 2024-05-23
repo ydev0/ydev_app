@@ -26,11 +26,15 @@ public class Server {
       redirect.get("/", "/home/");
       redirect.get("/home", "/home/");
 
-      get("/getAll", userController.getAll); // done
+      get("/getAll", userController.getAll); // done - FOR TEST PURPOSE ONLY
 
+
+      post("/signup", userController.signup); // done
+      post("/login", "application.json", userController.login); // done
+
+
+      // if it is on /user, it will need a header
       path("/user", () -> {
-        post("/signup", userController.signup); // done
-        post("/login", "application.json", userController.login); // done
         get("/:username", "application.json", userController.getByUsername); // done
         post("/logout", "application.json", userController.logout); // done
 
