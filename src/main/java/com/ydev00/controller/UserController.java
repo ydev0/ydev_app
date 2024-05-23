@@ -124,6 +124,29 @@ public class UserController {
     return gson.toJson(users);
   };
 
+
+  public Route update = (request, response) -> {
+    response.type("application.json");
+
+    User user = gson.fromJson(request.body(), User.class);
+
+    if(user == null || user.getUsername() == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "Wrong input");
+      return gson.toJson(message, Message.class);
+    }
+
+    user = (User) userDAO.update(user);
+
+    if(user == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "Could not update user");
+      return gson.toJson(message, Message.class);
+    }
+
+    return gson.toJson(user, User.class);
+  };
+
   public Route follow = (request, response) -> {
     response.type("application.json");
 

@@ -159,4 +159,21 @@ public class UserDAO implements DAO{
     }
     return true;
   }
+
+  public Object update(User user) {
+    try {
+      query = "update user set username = ?, email = ?, password = ?, pfp_id = ? where id = ?;";
+      statement = dbConn.prepareStatement(query);
+      statement.setString(1, user.getUsername());
+      statement.setString(2, user.getEmail());
+      statement.setString(3, user.getPassword());
+      statement.setInt(4, user.getProfilePic().getId());
+      statement.setInt(5, user.getId());
+      statement.execute();
+    } catch (Exception ex) {
+      System.err.println("Could not update user: "+ex.getMessage());
+      return null;
+    }
+    return user;
+  }
 }

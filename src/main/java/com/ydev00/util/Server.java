@@ -34,6 +34,8 @@ public class Server {
         get("/:username", "application.json", userController.getByUsername); // done
         post("/logout", "application.json", userController.logout); // done
 
+        put("/:username", "application.json", userController.update);
+
         get("/:username/t", "application.json", threadController.getThreadsByUser); // done
         post("/:username/follow", "application.json", userController.follow); // done
         post("/:username/unfollow", "application.json", userController.unfollow); // done
@@ -55,8 +57,8 @@ public class Server {
       path("/mod", () -> {
         get("/:username", "application.json", userController.getByUsername);
         path("delete", () -> {
-          post("/user", "application.json", modUserController.deleteUser);
-          post("/thread", "application.json", modUserController.deletePost);
+          delete("/user", "application.json", modUserController.deleteUser);
+          delete("/thread", "application.json", modUserController.deletePost);
         });
       });
 
