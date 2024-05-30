@@ -6,6 +6,7 @@ import spark.Route;
 
 import java.sql.Connection;
 import java.util.List;
+import java.util.ArrayList;
 
 import com.ydev00.model.user.User;
 import com.ydev00.model.user.ModUser;
@@ -13,6 +14,9 @@ import com.ydev00.model.image.Image;
 import com.ydev00.dao.UserDAO;
 import com.ydev00.dao.ImageDAO;
 import com.ydev00.util.Message;
+
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
 
 import org.eclipse.jetty.http.HttpStatus;
 import com.google.gson.Gson;
@@ -121,7 +125,8 @@ public class UserController {
       return gson.toJson(message, Message.class);
     }
 
-    return gson.toJson(users);
+    Type type = new TypeToken<ArrayList<User>>(){}.getType();
+    return gson.toJson(users, type);
   };
 
 

@@ -79,7 +79,7 @@ public class ThreadController {
     List<User> followees = relationDAO.getFollowees(new User(request.headers("username")));
 
     for(User followee : followees) {
-      feed.addAll(threadDAO.getByUser(followee));
+      feed.addAll(threadDAO.getByUser(followee, 25));
       if(feed.size() >= 100) {
         break;
       }

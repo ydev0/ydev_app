@@ -112,7 +112,6 @@ public class UserDAO implements DAO{
   }
 
   public List<User> listUsers(){
-    User user = new User();
     List<User> users = new ArrayList<>();
     try {
       query = "select * from user";
@@ -121,6 +120,7 @@ public class UserDAO implements DAO{
       resultSet = statement.getResultSet();
 
       while(resultSet.next()) {
+        User user = new User();
         user.setId(resultSet.getInt("id"));
         user.setUsername(resultSet.getString("username"));
         user.setEmail(resultSet.getString("email"));
@@ -147,7 +147,7 @@ public class UserDAO implements DAO{
 
       ImageDAO imageDAO = new ImageDAO(dbConn);
       if(imageDAO.delete(user.getProfilePic()))
-        user.setProfilePic(null);
+      user.setProfilePic(null);
 
       query = "delete from user where id = ?";
       statement = dbConn.prepareStatement(query);

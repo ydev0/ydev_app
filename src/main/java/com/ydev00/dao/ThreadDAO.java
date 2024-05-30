@@ -137,6 +137,34 @@ public class ThreadDAO implements DAO{
     return thrdList;
   }
 
+  public List<Thrd> getByUser(User user, int max) {
+    List<Thrd> thrdList = new ArrayList<>();
+    try {
+      query = "select * from thread where usr_id = ?";
+      statement = dbConn.prepareStatement(query);
+      statement.setInt(1, user.getId());
+      statement.setInt(2, max);
+      statement.execute();
+      resultSet = statement.getResultSet();
+
+      while(resultSet.next() && thrdList.size() < max) {
+        Thrd thrd = new Thrd();
+        thrd.setId(resultSet.getInt("id"));
+        thrd.setText(resultSet.getString("text"));
+        if(resultSet.getInt("article_id") != 0) {
+          ArticleDAO articleDAO = new ArticleDAO(dbConn);
+          Article article = (Article) articleDAO.get(new Article(resultSet.getInt("article_id")));
+          thrd.setArticle(article);
+        }
+        thrdList.add(thrd);
+      }
+    } catch (Exception ex) {
+      System.err.println("Could not get threads: "+ex.getMessage());
+      return null;
+    }
+    return thrdList;
+  }
+
   public Object delete(Object obj) {
     Thrd thrd = (Thrd) obj;
     try {
