@@ -39,9 +39,13 @@ public class ThreadDAO implements DAO{
         Article article = (Article) articleDAO.create(new Article(thrd.getArticle().getTitle(), thrd.getArticle().getMarkdown()));
         thrd.setArticle(article);
         statement.setInt(3, thrd.getArticle().getId());
+        System.out.println("Article created");
       }
-      else
+      else {
         statement.setInt(3, 0);
+        System.out.println("Article not created");
+      }
+        
 
       statement.execute();
       resultSet = statement.getGeneratedKeys();
