@@ -190,8 +190,8 @@ public class UserController {
       return gson.toJson(message, Message.class);
     }
 
-    relationDAO.unfollow(userToUnfollow.getUsername(),request.params("username"));
-    return "Unfollowed user +" ;
+    relationDAO.unfollow(request.params("username"), userToUnfollow.getUsername());
+    return "Unfollowed user" + userToUnfollow.getUsername();
   };
 
   public Route like = (request, response) -> {

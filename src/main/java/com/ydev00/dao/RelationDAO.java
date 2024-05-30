@@ -32,7 +32,6 @@ public class RelationDAO {
       }
 
       if (user.getId()== flwdUsr.getId()) {
-        System.out.println(user.getUsername() + " " + flwdUsr.getUsername());
         throw new Exception("Cannot follow yourself");
       }
 
@@ -49,10 +48,12 @@ public class RelationDAO {
 
   public void unfollow (String usr, String flwr) {
     try {
-      User user = (User)userDAO.getByUsername(new User(flwr));
-      User followeeUser = (User)userDAO.getByUsername(new User(usr));
+      User user = (User)userDAO.getByUsername(new User(usr));
+      User flwdUsr = (User)userDAO.getByUsername(new User(flwr));
 
-      if(user == null || followeeUser == null) {
+      if(user == null || flwdUsr == null) {
+        System.out.println(user.getId());
+        System.out.println(flwdUsr.getId());
         throw new Exception("User not found");
       }
 
@@ -63,7 +64,7 @@ public class RelationDAO {
       query = "delete from usr_flw where usr_id = ? and flw_id = ?";
       statement = dbConn.prepareStatement(query);
       statement.setInt(1, user.getId());
-      statement.setInt(2, followeeUser.getId());
+      statement.setInt(2, flwdUsr.getId());
       statement.execute();
     } catch (Exception ex) {
       System.err.println("Could not follow: "+ex.getMessage());
