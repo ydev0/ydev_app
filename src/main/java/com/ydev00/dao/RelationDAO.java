@@ -24,21 +24,22 @@ public class RelationDAO {
 
   public void follow (String usr, String flwr) {
     try {
-      User user = (User)userDAO.getByUsername(new User(flwr));
-      User followeeUser = (User)userDAO.getByUsername(new User(usr));
+      User user = (User)userDAO.getByUsername(new User(usr));
+      User flwdUsr = (User)userDAO.getByUsername(new User(flwr));
 
-      if(user == null || followeeUser == null) {
+      if(user == null || flwdUsr == null) {
         throw new Exception("User not found");
       }
 
-      if (user.getId() == followeeUser.getId()) {
+      if (user.getId()== flwdUsr.getId()) {
+        System.out.println(user.getUsername() + " " + flwdUsr.getUsername());
         throw new Exception("Cannot follow yourself");
       }
 
       query = "insert into usr_flw (usr_id, flw_id) values (?, ?)";
       statement = dbConn.prepareStatement(query);
       statement.setInt(1, user.getId());
-      statement.setInt(2, followeeUser.getId());
+      statement.setInt(2, flwdUsr.getId());
       statement.execute();
 
     } catch (Exception ex) {
