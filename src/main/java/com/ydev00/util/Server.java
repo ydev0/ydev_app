@@ -41,20 +41,22 @@ public class Server {
         put("/:username", "application.json", userController.update);
 
         get("/:username/t", "application.json", threadController.getThreadsByUser); // done
-        post("/:username/follow", "application.json", userController.follow); // done
-        post("/:username/unfollow", "application.json", userController.unfollow); // done
-        post("/:username/like", "application.json", userController.like);
-        post("/:username/unlike", "application.json", userController.unlike);
+        post("/follow", "application.json", userController.follow); // done
+        post("/unfollow", "application.json", userController.unfollow); // done
+        put("/update", "application.json", userController.update); // done
         get(":username/followers", "application.json", userController.getFollowers);
         get(":username/followees", "application.json", userController.getFollowees);
       });
 
       path("/home", () -> {
         get("/", "application.json" , threadController.loadFeed); // maybe done
+
         path("/t", () -> {
           get("/:id", "application.json", threadController.loadThread);
           post("/new", "application.json", threadController.create); // done
           post("/comment", "application.json", threadController.comment);
+          post("/like", "application.json", userController.like);
+          post("/unlike", "application.json", userController.unlike);
         });
       });
 
@@ -67,7 +69,7 @@ public class Server {
       });
 
       if(dbConn != null)
-        System.out.println("[Server Connected]");
+      System.out.println("[Server Connected]");
     } catch (Exception ex) {
       System.err.println("Server could not start. Error: " + ex.getMessage());
     }

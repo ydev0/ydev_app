@@ -76,7 +76,6 @@ public class ThreadController {
     }
 
     List<Thrd> feed = new ArrayList<>();
-
     List<User> followees = relationDAO.getFollowees(new User(request.headers("username")));
 
     for(User followee : followees) {
@@ -136,7 +135,7 @@ public class ThreadController {
       List<Thrd> assocThrds = relationDAO.getLinkedThreads(new Thrd(Integer.parseInt(request.headers("thread_id"))));
       Message message = new Message("Success", "Thread linked");
       response.status(HttpStatus.OK_200);
-      return gson.toJson(thrd) + "\n" +gson.toJson(message, Message.class);
+      return gson.toJson(assocThrds) + "\n" +gson.toJson(message, Message.class);
     }
 
     response.status(HttpStatus.OK_200);

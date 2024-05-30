@@ -140,6 +140,7 @@ public class UserDAO implements DAO{
   public boolean delete(User user) {
     try {
       user = get(user);
+
       if (user == null) {
         throw new Exception("User not found");
       }
@@ -156,6 +157,7 @@ public class UserDAO implements DAO{
 
     } catch (Exception ex) {
       System.err.println("User not found: "+ex.getMessage());
+      return false;
     }
     return true;
   }
@@ -170,6 +172,11 @@ public class UserDAO implements DAO{
       statement.setInt(4, user.getProfilePic().getId());
       statement.setInt(5, user.getId());
       statement.execute();
+      resultSet = statement.getGeneratedKeys();
+
+      if(resultSet.next()) {
+        user.setId(resultSet.getInt(1));
+      }
     } catch (Exception ex) {
       System.err.println("Could not update user: "+ex.getMessage());
       return null;

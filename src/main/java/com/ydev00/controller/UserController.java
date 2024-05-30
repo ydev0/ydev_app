@@ -52,7 +52,7 @@ public class UserController {
       return gson.toJson(message, Message.class);
     }
 
-    user = (User) userDAO.create(user);
+    user = userDAO.create(user);
 
     response.status(HttpStatus.OK_200);
     return gson.toJson(user, User.class);
@@ -156,7 +156,15 @@ public class UserController {
       return gson.toJson(message, Message.class);
     }
 
-    relationDAO.follow(request.headers("username"), request.params("username"));
+    User userToFollow = (User)userDAO.getByUsername(gson.fromJson(request.body(), User.class));
+
+    if(userToFollow == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "User not found");
+      return gson.toJson(message, Message.class);
+    }
+
+    relationDAO.follow(userToFollow.getUsername(), request.params("username"));
     return "Followed user +" + request.params("username");
   };
 
@@ -169,7 +177,15 @@ public class UserController {
       return gson.toJson(message, Message.class);
     }
 
-    relationDAO.unfollow(request.headers("username"), request.params("username"));
+    User userToUnfollow = (User)userDAO.getByUsername(gson.fromJson(request.body(), User.class));
+
+    if (userToUnfollow == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "User not found");
+      return gson.toJson(message, Message.class);
+    }
+
+    relationDAO.unfollow(userToUnfollow.getUsername(),request.params("username"));
     return "Unfollowed user +" +request.params("username");
   };
 
@@ -206,7 +222,7 @@ public class UserController {
     }
 
     Thrd thrd = gson.fromJson(request.body(), Thrd.class);
-    User user = (User) userDAO.getByUsername(new User(request.headers("username")));
+    User user = (User) userDAO.getByUsername(gson.fromJson(request.body(), User.class));
 
     if(thrd == null || user == null) {
       response.status(HttpStatus.FAILED_DEPENDENCY_424);

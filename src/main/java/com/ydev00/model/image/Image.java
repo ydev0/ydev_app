@@ -12,6 +12,12 @@ public class Image {
   @SerializedName("image")
   private ImageData image;
 
+  @SerializedName("width")
+  private int width;
+
+  @SerializedName("height")
+  private int height;
+
   public Image() {}
 
   public Image(int id) {
@@ -27,6 +33,8 @@ public class Image {
     this.id = id;
     this.type = type;
     this.image = image;
+    this.width = width;
+    this.height = height;
   }
 
   public int getId() {
@@ -49,6 +57,22 @@ public class Image {
     return image;
   }
 
+  public int getWidth() {
+    return width;
+  }
+
+  public void setWidth(int width) {
+    this.width = width;
+  }
+
+  public int getHeight() {
+    return height;
+  }
+
+  public void setHeight(int height) {
+    this.height = height;
+  }
+
   public void setImage(ImageData image) {
     this.image = image;
   }
@@ -58,6 +82,8 @@ public class Image {
             "id=" + id +
             ", type='" + type + '\'' +
             ", image='" + image + '\'' +
+            ", width='" + width + '\'' +
+            ", height='" + height + '\'' +
             '}';
   }
 }

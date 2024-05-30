@@ -5,9 +5,8 @@ import com.ydev00.model.thread.Article;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.List;
 
-public class ArticleDAO implements DAO{
+public class ArticleDAO {
   private Connection dbConn;
   private String query;
   private PreparedStatement statement;
@@ -20,12 +19,11 @@ public class ArticleDAO implements DAO{
     this.dbConn = dbConn;
   }
 
-  @Override
   public Object create(Object obj) {
     Article article = (Article) obj;
     try {
       query = "insert into article(title, markdown) values (?, ?);";
-      statement = dbConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+      statement = dbConn.prepareStatement(query);
       statement.setString(1, article.getTitle());
       statement.setString(2, article.getMarkdown());
       statement.execute();
@@ -41,7 +39,6 @@ public class ArticleDAO implements DAO{
     return article;
   }
 
-  @Override
   public Object get(Object obj) {
     Article article = (Article) obj;
     try {
@@ -60,10 +57,5 @@ public class ArticleDAO implements DAO{
       return null;
     }
     return article;
-  }
-
-  @Override
-  public List<?> getAll() {
-    return List.of();
   }
 }
