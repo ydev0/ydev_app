@@ -76,7 +76,9 @@ public class ThreadController {
     }
 
     List<Thrd> feed = new ArrayList<>();
-    List<User> followees = relationDAO.getFollowees(new User(request.headers("username")));
+    UserDAO UserDAO = new UserDAO(dbConn);
+    User user = (User)UserDAO.getByUsername(new User(request.headers("username")));
+    List<User> followees = relationDAO.getFollowees(user);
 
     for(User followee : followees) {
       feed.addAll(threadDAO.getByUser(followee, 25));

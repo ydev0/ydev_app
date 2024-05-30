@@ -25,12 +25,15 @@ public class ImageDAO implements DAO{
         return get(new Image(0));
       }
 
-      query = "insert into image (type, image) values (?, ?)";
+      query = "insert into image (type, image, width, height) values (?, ?, ?, ?)";
       statement = dbConn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
       statement.setString(1, image.getType());
 
       Blob blob = image.getImage().toBlob();
       statement.setBlob(2, blob);
+
+      statement.setInt(3, image.getWidth());
+      statement.setInt(4, image.getHeight());
 
       statement.execute();
       resultSet = statement.getGeneratedKeys();
@@ -57,6 +60,8 @@ public class ImageDAO implements DAO{
       if(resultSet.next()) {
         image.setId(resultSet.getInt("id"));
         image.setType(resultSet.getString("type"));
+        image.setWidth(resultSet.getInt("width"));
+        image.setHeight(resultSet.getInt("height"));
         ImageData imageData = new ImageData();
         image.setImage(imageData.blobToImageData((resultSet.getBlob("image"))));
         return image;
@@ -80,6 +85,8 @@ public class ImageDAO implements DAO{
         image.setId(resultSet.getInt("id"));
         image.setType(resultSet.getString("type"));
         image.setImage(image.getImage().blobToImageData(resultSet.getBlob("image")));
+        image.setWidth(resultSet.getInt("width"));
+        image.setHeight(resultSet.getInt("height"));
         images.add(image);
       }
     }
