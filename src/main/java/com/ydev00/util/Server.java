@@ -45,22 +45,15 @@ public class Server {
 
       get("/feed", "application.json" , threadController.loadFeed); // maybe done
 
-      path("/t", () -> {
-        get("/:id", "application.json", threadController.loadThread);
-        post("/new", "application.json", threadController.create); // done
-        post("/comment", "application.json", threadController.comment);
+      get("/t/:id", "application.json", threadController.loadThread);
+      post("/t/new", "application.json", threadController.create); // done
+      post("/t/comment", "application.json", threadController.comment);
 
-        post("/like", "application.json", userController.like);
-        post("/unlike", "application.json", userController.unlike);
-      });
+      post("/t/like", "application.json", userController.like);
+      post("/t/unlike", "application.json", userController.unlike);
 
-      path("/mod", () -> {
-        get("/:username", "application.json", userController.getByUsername);
-        path("delete", () -> {
-          delete("/user", "application.json", modUserController.deleteUser);
-          delete("/thread", "application.json", modUserController.deletePost);
-        });
-      });
+      delete("/delete/user", "application.json", modUserController.deleteUser);
+      delete("/delete/thread", "application.json", modUserController.deletePost);
 
       if(dbConn != null)
         System.out.println("[Server Connected]");
