@@ -174,7 +174,7 @@ public class UserController {
     }
 
     relationDAO.follow(request.headers("username"), userToFollow.getUsername());
-    return "Followed user +" + userToFollow.getUsername();
+    return "Followed user + " + userToFollow.getUsername();
   };
 
   public Route unfollow = (request, response) -> {
@@ -274,7 +274,7 @@ public class UserController {
       return gson.toJson(message, Message.class);
     }
 
-    User user = (User) userDAO.getByUsername(gson.fromJson(request.body(), User.class));
+    User user = (User) userDAO.getByUsername(new User(request.headers("username")));
 
     if(user == null || user.getEmail() == null){
       response.status(HttpStatus.FAILED_DEPENDENCY_424);
@@ -308,7 +308,7 @@ public class UserController {
       return gson.toJson(message, Message.class);
     }
 
-    User user = (User) userDAO.getByUsername(gson.fromJson(request.body(), User.class));
+    User user = (User) userDAO.getByUsername(request.headers("username"));
 
     if(user == null || user.getEmail() == null) {
       response.status(HttpStatus.FAILED_DEPENDENCY_424);

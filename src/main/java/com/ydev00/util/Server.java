@@ -30,10 +30,10 @@ public class Server {
       post("/signup", userController.signup); // done
       post("/login", "application.json", userController.login); // done
 
-      get("/user/getFollowers", "application.json", userController.getFollowers); // done
-      get("/user/getFollowees", "application.json", userController.getFollowees);
+      get("/user/:username/getFollowers", "application.json", userController.getFollowers); // done
+      get("/user/:username/getFollowees", "application.json", userController.getFollowees);
 
-      get("/user/t", "application.json", threadController.getThreadsByUser); // done
+      get("/user/:username/t", "application.json", threadController.getThreadsByUser); // done
 
       get("/user/:username", "application.json", userController.getByUsername); // done
       post("/user/logout", "application.json", userController.logout); // done

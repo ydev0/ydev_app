@@ -89,6 +89,7 @@ public class ThreadController {
 
     for(User followee : followees) {
       feed.addAll(threadDAO.getByUser(followee, 25));
+      System.out.println("Feed size: " + feed.size());
       if(feed.size() >= 100) {
         break;
       }

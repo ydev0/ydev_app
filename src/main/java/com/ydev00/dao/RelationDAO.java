@@ -44,9 +44,11 @@ public class RelationDAO {
       statement.setInt(2, flwdUsr.getId());
       statement.execute();
 
+
     } catch (Exception ex) {
       System.err.println("Could not follow: "+ex.getMessage());
     }
+    System.out.println("Followed");
   }
 
   public void unfollow (String usr, String flwr) {
