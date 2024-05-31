@@ -62,6 +62,7 @@ public class ImageDAO implements DAO{
         image.setType(resultSet.getString("type"));
         image.setWidth(resultSet.getInt("width"));
         image.setHeight(resultSet.getInt("height"));
+
         ImageData imageData = new ImageData();
         image.setImage(imageData.blobToImageData((resultSet.getBlob("image"))));
         return image;
@@ -96,7 +97,9 @@ public class ImageDAO implements DAO{
     return images;
   }
 
-  public boolean delete(Image image) {
+  @Override
+  public Object delete(Object obj) {
+    Image image = (Image) obj;
     try {
       query = "delete from image where id = ?";
       statement = dbConn.prepareStatement(query);
@@ -107,5 +110,10 @@ public class ImageDAO implements DAO{
       System.err.println("Image not deleted: "+ex.getMessage());
       return false;
     }
+  }
+
+  @Override
+  public Object update(Object obj) {
+    return null;
   }
 }

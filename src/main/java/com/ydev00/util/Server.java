@@ -27,32 +27,31 @@ public class Server {
       redirect.get("/home", "/home/");
 
       get("/getAll", userController.getAll); // done - FOR TEST PURPOSE ONLY
-
-
       post("/signup", userController.signup); // done
       post("/login", "application.json", userController.login); // done
 
 
       // if it is on /user, it will need a header
       path("/user", () -> {
+        get("/getFollowers", "application.json", userController.getFollowers);
+
         get("/:username", "application.json", userController.getByUsername); // done
         post("/logout", "application.json", userController.logout); // done
 
-        put("/:username", "application.json", userController.update);
-
-        get("/:username/t", "application.json", threadController.getThreadsByUser); // done
         post("/follow", "application.json", userController.follow); // done
         post("/unfollow", "application.json", userController.unfollow); // done
         put("/update", "application.json", userController.update); // done
-        get(":username/followers", "application.json", userController.getFollowers);
-        get(":username/followees", "application.json", userController.getFollowees);
+        get("/followees", "application.json", userController.getFollowees);
+
+        get("/:username/t", "application.json", threadController.getThreadsByUser); // done
       });
 
       path("/home", () -> {
-        get("/", "application.json" , threadController.loadFeed); // maybe done
+        get("/feed", "application.json" , threadController.loadFeed); // maybe done
 
         path("/t", () -> {
           get("/:id", "application.json", threadController.loadThread);
+          get("/loadByUser", "application.json", threadController.loadByUser);
           post("/new", "application.json", threadController.create); // done
           post("/comment", "application.json", threadController.comment);
           post("/like", "application.json", userController.like);

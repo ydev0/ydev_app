@@ -1,5 +1,6 @@
 package com.ydev00.dao;
 
+import com.ydev00.model.image.Image;
 import com.ydev00.model.user.User;
 import com.ydev00.model.thread.Thrd;
 
@@ -16,10 +17,12 @@ public class RelationDAO {
   private PreparedStatement statement ;
   private ResultSet resultSet;
   private UserDAO userDAO;
+  private ImageDAO imageDAO;
 
   public RelationDAO(Connection dbConn) {
     this.dbConn = dbConn;
     this.userDAO = new UserDAO(dbConn);
+    this.imageDAO = new ImageDAO(dbConn);
   }
 
   public void follow (String usr, String flwr) {
@@ -83,7 +86,9 @@ public class RelationDAO {
       resultSet = statement.getResultSet();
 
       while(resultSet.next()) {
-        User follower = userDAO.get(new User(resultSet.getInt("followed_id")));
+        System.out.println(resultSet.getInt("flw_id"));
+        User follower = userDAO.get(new User(resultSet.getInt("flw_id")));
+        user.setProfilePic(imageDAO.get(user.getProfilePic()));
         users.add(follower);
       }
     } catch (Exception ex) {
@@ -105,7 +110,8 @@ public class RelationDAO {
       resultSet = statement.getResultSet();
 
       while(resultSet.next()) {
-        User followee = userDAO.get(new User(resultSet.getInt("flw_id")));
+        User followee = userDAO.get(new User(resultSet.getInt("")));
+
         users.add(followee);
       }
     } catch (Exception ex) {

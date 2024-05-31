@@ -78,6 +78,7 @@ public class ThreadController {
     List<Thrd> feed = new ArrayList<>();
     UserDAO UserDAO = new UserDAO(dbConn);
     User user = (User)UserDAO.getByUsername(new User(request.headers("username")));
+
     List<User> followees = relationDAO.getFollowees(user);
 
     for(User followee : followees) {
@@ -112,6 +113,35 @@ public class ThreadController {
     }
 
     response.status(HttpStatus.OK_200);
+    return gson.toJson(thrdList);
+  };
+
+  public Route loadByUser = (request, response) -> {
+    response.type("application.json");
+
+    if(request.headers("username") == null || !(request.headers("auth").equals("true"))) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "User not logged in");
+      return gson.toJson(message, Message.class);
+    }
+
+    List<Thrd> thrdList;
+    User user = (User) userDAO.getByUsername(new User(request.headers("username")));
+  
+    if (user == null) {
+      response.status(HttpStatus.NOT_FOUND_404);
+      Message message = new Message("Error", "User not found");
+      return gson.toJson(message, Message.class);
+    }
+
+    thrdList = threadDAO.getByUser(user, 25);
+
+    if(thrdList.isEmpty()) {
+      response.status(HttpStatus.NOT_FOUND_404);
+      Message message = new Message("Error", "No threads found");
+      return gson.toJson(message, Message.class);
+    }
+
     return gson.toJson(thrdList);
   };
 

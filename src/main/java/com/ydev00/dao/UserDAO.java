@@ -52,33 +52,42 @@ public class UserDAO implements DAO{
   }
 
   @Override
-  public Object get(Object obj) throws SQLException {
+  public Object get(Object obj) {
     return null;
   }
+
 
   public <T extends UserAbstract> T get(T user) throws SQLException {
     try {
       query = "SELECT * FROM user WHERE email = ?;";
 
       statement = dbConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
-      statement.setString(1, user.getEmail());
+
+      if ((user.getEmail() == null  || user.getUsername() == null) && user.getId() != 0) {
+        query = "SELECT * FROM user WHERE id = ?;";
+        statement.setInt(1, user.getId());
+        System.out.println("Getting user by id");
+      }
+      else
+        statement.setString(1, user.getEmail());
       statement.execute();
       resultSet = statement.getResultSet();
 
       if(resultSet.next()) {
-        user.setId(resultSet.getInt("id"));
+        if(user.getId() == 0)
+          user.setId(resultSet.getInt("id"));
+        if (user.getEmail() == null)
+          user.setEmail(resultSet.getString("email"));
         user.setUsername(resultSet.getString("username"));
         user.setRoot(resultSet.getBoolean("root"));
         user.setProfilePic(new Image(resultSet.getInt("pfp_id")));
         user.setAuth(true);
 
         if (!(resultSet.getString("password").equals(user.getPassword()))) {
-          user.setAuth(false);
-          System.out.println("Password does not match!");
+          throw new Exception("Password does not match!");
         }
 
         user.setPassword("");
-
       }
     } catch (Exception e) {
       System.err.println("User not found! " +e.getMessage());
@@ -88,8 +97,8 @@ public class UserDAO implements DAO{
   }
 
   public Object getByUsername(Object obj) {
+    User user =  (User) obj;
     try {
-      User user =  (User) obj;
       query = "SELECT * FROM user WHERE username= ?;";
 
       statement = dbConn.prepareStatement(query);
@@ -102,13 +111,15 @@ public class UserDAO implements DAO{
         user.setEmail(resultSet.getString("email"));
         user.setPassword("");
         user.setProfilePic(new Image(resultSet.getInt("pfp_id")));
-        return user;
+        user.setRoot(resultSet.getBoolean("root"));
+        user.setAuth(false);
       }
     }
     catch (Exception ex) {
       System.err.println("User not found!" + ex.getMessage());
+      return null;
     }
-    return null;
+    return user;
   }
 
   public List<User> listUsers(){
@@ -137,7 +148,9 @@ public class UserDAO implements DAO{
     return users;
   }
 
-  public boolean delete(User user) {
+  @Override
+  public Object delete(Object obj) {
+    User user = (User) obj;
     try {
       user = get(user);
 
@@ -146,8 +159,9 @@ public class UserDAO implements DAO{
       }
 
       ImageDAO imageDAO = new ImageDAO(dbConn);
-      if(imageDAO.delete(user.getProfilePic()))
-      user.setProfilePic(null);
+      Image image = (Image) imageDAO.delete(user.getProfilePic());
+      if(image == null)
+        user.setProfilePic(null);
 
       query = "delete from user where id = ?";
       statement = dbConn.prepareStatement(query);
@@ -157,12 +171,14 @@ public class UserDAO implements DAO{
 
     } catch (Exception ex) {
       System.err.println("User not found: "+ex.getMessage());
-      return false;
+      return user;
     }
-    return true;
+    return null;
   }
 
-  public Object update(User user) {
+  @Override
+  public Object update(Object obj) {
+    User user = (User) obj;
     try {
       query = "update user set username = ?, email = ?, password = ?, pfp_id = ? where id = ?;";
       statement = dbConn.prepareStatement(query);

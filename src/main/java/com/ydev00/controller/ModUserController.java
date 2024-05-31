@@ -64,8 +64,9 @@ public class ModUserController {
       return "User not found";
     }
 
-    if(userDAO.delete(user)) {
-      user = null;
+    user = (User) userDAO.delete(user);
+
+    if (user == null){
       response.status(HttpStatus.OK_200);
       return gson.toJson(user);
     }

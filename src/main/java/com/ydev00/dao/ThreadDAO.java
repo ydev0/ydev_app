@@ -147,7 +147,6 @@ public class ThreadDAO implements DAO{
       query = "select * from thread where usr_id = ?";
       statement = dbConn.prepareStatement(query);
       statement.setInt(1, user.getId());
-      statement.setInt(2, max);
       statement.execute();
       resultSet = statement.getResultSet();
 
@@ -164,11 +163,11 @@ public class ThreadDAO implements DAO{
       }
     } catch (Exception ex) {
       System.err.println("Could not get threads: "+ex.getMessage());
-      return null;
     }
     return thrdList;
   }
 
+  @Override
   public Object delete(Object obj) {
     Thrd thrd = (Thrd) obj;
     try {
@@ -181,5 +180,10 @@ public class ThreadDAO implements DAO{
       return null;
     }
     return thrd;
+  }
+
+  @Override
+  public Object update(Object obj) {
+    return null;
   }
 }

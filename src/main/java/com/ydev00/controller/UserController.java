@@ -50,12 +50,14 @@ public class UserController {
       return gson.toJson(message, Message.class);
     }
 
-    if ((User) userDAO.getByUsername(user) != null) {
+    User userExists = new User(user.getUsername());
+    userExists = (User) userDAO.getByUsername(userExists);
+
+    if (userExists.getEmail() != null) {
       response.status(HttpStatus.FAILED_DEPENDENCY_424);
       Message message = new Message("Error", "Username already exists");
       return gson.toJson(message, Message.class);
     }
-
     user = userDAO.create(user);
 
     response.status(HttpStatus.OK_200);
@@ -100,9 +102,10 @@ public class UserController {
 
     User user = (User) userDAO.getByUsername(new User(request.params("username")));
 
-    if(user == null) {
+
+    if(user == null || user.getEmail() == null) {
       response.status(HttpStatus.FAILED_DEPENDENCY_424);
-      Message message = new Message("Error", "Not logging in");
+      Message message = new Message("Error", "User not found");
       return gson.toJson(message, Message.class);
     }
 
@@ -270,13 +273,18 @@ public class UserController {
       return gson.toJson(message, Message.class);
     }
 
-    User user = (User) userDAO.getByUsername(new User(request.headers("username")));
+    User user = (User) userDAO.getByUsername(gson.fromJson(request.body(), User.class));
 
-    if(user == null) {
+    if(user == null || user.getEmail() == null){
       response.status(HttpStatus.FAILED_DEPENDENCY_424);
       Message message = new Message("Error", "User not found");
       return gson.toJson(message, Message.class);
     }
+
+    Image image = imageDAO.get(user.getProfilePic());
+
+    if(image != null)
+      user.setProfilePic(image);
 
     List<User> followers = relationDAO.getFollowers(user);
 
@@ -289,7 +297,8 @@ public class UserController {
     if (followers.isEmpty())
       return "No followers";
 
-    return gson.toJson(followers);
+    Type type = new TypeToken<ArrayList<User>>(){}.getType();
+    return gson.toJson(followers, type);
   };
 
   public Route getFollowees = (request, response) -> {
@@ -301,9 +310,9 @@ public class UserController {
       return gson.toJson(message, Message.class);
     }
 
-    User user = (User) userDAO.getByUsername(new User(request.params("username")));
+    User user = (User) userDAO.getByUsername(gson.fromJson(request.body(), User.class));
 
-    if(user == null) {
+    if(user == null || user.getEmail() == null) {
       response.status(HttpStatus.FAILED_DEPENDENCY_424);
       Message message = new Message("Error", "User not found");
       return gson.toJson(message, Message.class);
@@ -317,9 +326,11 @@ public class UserController {
       return gson.toJson(message, Message.class);
     }
 
-    if(followees.isEmpty())
-      return "No followees";
+    if(followees.isEmpty()) {
+      return new Message("WARN", "No followees");
+    }
 
-    return gson.toJson(followees);
+    Type type = new TypeToken<ArrayList<User>>(){}.getType();
+    return gson.toJson(followees, type);
   };
 }

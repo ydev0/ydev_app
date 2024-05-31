@@ -5,6 +5,8 @@ import java.util.List;
 
 public interface DAO {
     public Object create(Object obj);
-    public Object get (Object obj) throws SQLException;
+    public Object get (Object obj);
     public List<?> getAll();
+    public Object update(Object obj);
+    public Object delete(Object obj);
 }
