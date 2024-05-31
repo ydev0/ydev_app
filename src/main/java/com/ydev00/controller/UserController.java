@@ -89,6 +89,7 @@ public class UserController {
       user.setProfilePic(image);
 
     response.status(HttpStatus.OK_200);
+    user.setAuth(true);
 
     if(user.isRoot()) {
       return gson.toJson(user, ModUser.class);
@@ -282,20 +283,17 @@ public class UserController {
     }
 
     Image image = imageDAO.get(user.getProfilePic());
-
     if(image != null)
       user.setProfilePic(image);
 
     List<User> followers = relationDAO.getFollowers(user);
 
-    if(followers == null) {
+    if(followers == null || followers.isEmpty()) {
       response.status(HttpStatus.FAILED_DEPENDENCY_424);
       Message message = new Message("Error", "Could not get followers");
       return gson.toJson(message, Message.class);
     }
 
-    if (followers.isEmpty())
-      return "No followers";
 
     Type type = new TypeToken<ArrayList<User>>(){}.getType();
     return gson.toJson(followers, type);
@@ -320,14 +318,10 @@ public class UserController {
 
     List<User> followees = relationDAO.getFollowees(user);
 
-    if(followees == null) {
+    if(followees == null || followees.isEmpty()) {
       response.status(HttpStatus.FAILED_DEPENDENCY_424);
       Message message = new Message("Error", "Could not get followees");
       return gson.toJson(message, Message.class);
-    }
-
-    if(followees.isEmpty()) {
-      return new Message("WARN", "No followees");
     }
 
     Type type = new TypeToken<ArrayList<User>>(){}.getType();

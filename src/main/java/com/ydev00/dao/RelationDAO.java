@@ -86,7 +86,6 @@ public class RelationDAO {
       resultSet = statement.getResultSet();
 
       while(resultSet.next()) {
-        System.out.println(resultSet.getInt("flw_id"));
         User follower = userDAO.get(new User(resultSet.getInt("flw_id")));
         user.setProfilePic(imageDAO.get(user.getProfilePic()));
         users.add(follower);

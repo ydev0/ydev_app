@@ -59,34 +59,30 @@ public class UserDAO implements DAO{
 
   public <T extends UserAbstract> T get(T user) throws SQLException {
     try {
-      query = "SELECT * FROM user WHERE email = ?;";
-
-      statement = dbConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
-
-      if ((user.getEmail() == null  || user.getUsername() == null) && user.getId() != 0) {
+      if(user.getEmail() != null) {
+        query = "SELECT * FROM user WHERE email = ?;";
+        statement = dbConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+        statement.setString(1, user.getEmail());
+        System.out.println("Getting user by email");
+      }
+      if(user.getId() != 0) {
         query = "SELECT * FROM user WHERE id = ?;";
+        statement = dbConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
         statement.setInt(1, user.getId());
         System.out.println("Getting user by id");
       }
-      else
-        statement.setString(1, user.getEmail());
       statement.execute();
       resultSet = statement.getResultSet();
 
       if(resultSet.next()) {
-        if(user.getId() == 0)
-          user.setId(resultSet.getInt("id"));
-        if (user.getEmail() == null)
-          user.setEmail(resultSet.getString("email"));
+        if (!(resultSet.getString("password").equals(user.getPassword())) && user.getEmail() != null) {
+          throw new Exception("Password does not match!");
+        }
+        user.setId(resultSet.getInt("id"));
+        user.setEmail(resultSet.getString("email"));
         user.setUsername(resultSet.getString("username"));
         user.setRoot(resultSet.getBoolean("root"));
         user.setProfilePic(new Image(resultSet.getInt("pfp_id")));
-        user.setAuth(true);
-
-        if (!(resultSet.getString("password").equals(user.getPassword()))) {
-          throw new Exception("Password does not match!");
-        }
-
         user.setPassword("");
       }
     } catch (Exception e) {

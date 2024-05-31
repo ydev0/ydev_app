@@ -26,24 +26,24 @@ public class Server {
       redirect.get("/", "/home/");
       redirect.get("/home", "/home/");
 
-      get("/getAll", userController.getAll); // done - FOR TEST PURPOSE ONLY
+      get("/getAll", userController.getAll); // done
       post("/signup", userController.signup); // done
       post("/login", "application.json", userController.login); // done
 
 
       // if it is on /user, it will need a header
       path("/user", () -> {
-        get("/getFollowers", "application.json", userController.getFollowers);
+        get("/getFollowers", "application.json", userController.getFollowers); // done
 
         get("/:username", "application.json", userController.getByUsername); // done
         post("/logout", "application.json", userController.logout); // done
 
         post("/follow", "application.json", userController.follow); // done
         post("/unfollow", "application.json", userController.unfollow); // done
-        put("/update", "application.json", userController.update); // done
+        put("/update", "application.json", userController.update);
         get("/followees", "application.json", userController.getFollowees);
 
-        get("/:username/t", "application.json", threadController.getThreadsByUser); // done
+        get("/:username/t", "application.json", threadController.getThreadsByUser);
       });
 
       path("/home", () -> {
