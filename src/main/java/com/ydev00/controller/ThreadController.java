@@ -1,5 +1,6 @@
 package com.ydev00.controller;
 
+import com.google.gson.reflect.TypeToken;
 import com.ydev00.dao.RelationDAO;
 import com.ydev00.dao.UserDAO;
 import com.ydev00.util.Message;
@@ -11,6 +12,7 @@ import com.ydev00.model.thread.Thrd;
 import com.ydev00.model.user.User;
 import com.ydev00.dao.ThreadDAO;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -170,9 +172,9 @@ public class ThreadController {
 
     if(request.headers("thrd_id") != null) {
       List<Thrd> assocThrds = relationDAO.getLinkedThreads(new Thrd(Integer.parseInt(request.headers("thread_id"))));
-      Message message = new Message("Success", "Thread linked");
       response.status(HttpStatus.OK_200);
-      return gson.toJson(assocThrds) + "\n" +gson.toJson(message, Message.class);
+      Type type = new TypeToken<List<Thrd>>() {}.getType();
+      return gson.toJson(assocThrds, type);
     }
 
     response.status(HttpStatus.OK_200);
