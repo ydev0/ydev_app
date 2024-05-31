@@ -29,8 +29,7 @@ public class Image {
     this.image = image;
   }
 
-  public Image(int id, String type, ImageData image, int width, int height) {
-    this.id = id;
+  public Image(String type, ImageData image, int width, int height) {
     this.type = type;
     this.image = image;
     this.width = width;
