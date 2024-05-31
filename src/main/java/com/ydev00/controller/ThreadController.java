@@ -54,8 +54,8 @@ public class ThreadController {
     }
 
     ThreadDAO threadDAO = new ThreadDAO(dbConn);
-
-    thrd = (Thrd) threadDAO.create(thrd, user.getId());
+    thrd.setUser(user);
+    thrd = (Thrd) threadDAO.create(thrd);
 
     if(thrd == null) {
       response.status(HttpStatus.FAILED_DEPENDENCY_424);
@@ -189,7 +189,7 @@ public class ThreadController {
     }
 
     Thrd thrd = gson.fromJson(request.body(), Thrd.class);
-    thrd = (Thrd) threadDAO.create(thrd, Integer.parseInt(request.headers("thread_id")));
+    thrd = (Thrd) threadDAO.create(thrd);
 
     if(thrd == null) {
       response.status(HttpStatus.FAILED_DEPENDENCY_424);

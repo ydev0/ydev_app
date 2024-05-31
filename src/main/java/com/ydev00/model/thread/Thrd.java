@@ -1,6 +1,7 @@
 package com.ydev00.model.thread;
 
 import com.google.gson.annotations.SerializedName;
+import com.ydev00.model.user.User;
 
 public class Thrd {
   @SerializedName("id")
@@ -11,6 +12,9 @@ public class Thrd {
 
   @SerializedName("article")
   private Article article;
+
+  @SerializedName("user")
+  private User user;
 
   public Thrd() {
   }
@@ -31,10 +35,10 @@ public class Thrd {
     this.id = id;
   }
 
+
   public Article getArticle() {
     return article;
   }
-
 
   public String getText() {
     return text;
@@ -48,11 +52,20 @@ public class Thrd {
     this.article = article;
   }
 
+  public User getUser() {
+    return user;
+  }
+
+  public void setUser(User user) {
+    this.user = user;
+  }
+
   public String toString() {
     return "Thrd {" +
     "id=" + id +
     ", text='" + text + '\'' +
     ", article='" + article+ '\'' +
+    ", user='" + user + '\'' +
     '}';
   }
 }

@@ -46,7 +46,7 @@ public class Server {
 
       post("/user/logout", "application.json", userController.logout); // done
 
-      get("/feed", "application.json" , threadController.loadFeed); // maybe done
+      get("/feed", "application.json" , threadController.loadFeed); // done
 
       get("/t/:id", "application.json", threadController.loadThread);
 

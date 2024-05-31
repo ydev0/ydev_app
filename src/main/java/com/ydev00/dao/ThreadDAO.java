@@ -22,17 +22,13 @@ public class ThreadDAO implements DAO{
 
   @Override
   public Object create(Object obj) {
-    return null;
-  }
-
-  public Object create(Object obj, int id) {
     Thrd thrd = (Thrd) obj;
     try {
       query = "insert into thread (text, usr_id, article_id) values (?, ?, ?); ";
 
       statement = dbConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
       statement.setString(1, thrd.getText());
-      statement.setInt(2, id);
+      statement.setInt(2, thrd.getUser().getId());
 
       if(thrd.getArticle() != null) {
         ArticleDAO articleDAO = new ArticleDAO(dbConn);
@@ -72,6 +68,8 @@ public class ThreadDAO implements DAO{
       while(resultSet.next()) {
         thread.setId(resultSet.getInt("id"));
         thread.setText(resultSet.getString("text"));
+        UserDAO userDAO = new UserDAO(dbConn);
+        thread.setUser((User) userDAO.get(new User(resultSet.getInt("usr_id"))));
 
         if(resultSet.getString("markdown") != null) {
           ArticleDAO articleDAO = new ArticleDAO(dbConn);
@@ -100,6 +98,9 @@ public class ThreadDAO implements DAO{
       while(resultSet.next()) {
         thrd.setId(resultSet.getInt("id"));
         thrd.setText(resultSet.getString("text"));
+        UserDAO userDAO = new UserDAO(dbConn);
+        thrd.setUser((User) userDAO.get(new User(resultSet.getInt("usr_id"))));
+
         if(resultSet.getBlob("content") != null) {
           ArticleDAO articleDAO = new ArticleDAO(dbConn);
           Article article = (Article) articleDAO.get(new Article(resultSet.getInt("article_id")));
@@ -127,6 +128,9 @@ public class ThreadDAO implements DAO{
         Thrd thrd = new Thrd();
         thrd.setId(resultSet.getInt("id"));
         thrd.setText(resultSet.getString("text"));
+        UserDAO userDAO = new UserDAO(dbConn);
+        thrd.setUser((User) userDAO.get(new User(resultSet.getInt("usr_id"))));
+
         if(resultSet.getInt("article_id") != 0) {
           ArticleDAO articleDAO = new ArticleDAO(dbConn);
           Article article = (Article) articleDAO.get(new Article(resultSet.getInt("article_id")));
@@ -154,6 +158,8 @@ public class ThreadDAO implements DAO{
         Thrd thrd = new Thrd();
         thrd.setId(resultSet.getInt("id"));
         thrd.setText(resultSet.getString("text"));
+        UserDAO userDAO = new UserDAO(dbConn);
+        thrd.setUser((User) userDAO.get(new User(resultSet.getInt("usr_id"))));
         if(resultSet.getInt("article_id") != 0) {
           ArticleDAO articleDAO = new ArticleDAO(dbConn);
           Article article = (Article) articleDAO.get(new Article(resultSet.getInt("article_id")));
