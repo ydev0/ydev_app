@@ -57,8 +57,6 @@ public class RelationDAO {
       User flwdUsr = (User)userDAO.getByUsername(new User(flwr));
 
       if(user == null || flwdUsr == null) {
-        System.out.println(user.getId());
-        System.out.println(flwdUsr.getId());
         throw new Exception("User not found");
       }
 
@@ -102,8 +100,8 @@ public class RelationDAO {
   public List<User> getFollowees (Object obj) {
     User user = (User)obj;
     List<User> users = new ArrayList<>();
-
     try {
+
       query = "select * from usr_flw where flw_id = ?";
       statement = dbConn.prepareStatement(query);
       statement.setInt(1, (user.getId()));
@@ -111,12 +109,12 @@ public class RelationDAO {
       resultSet = statement.getResultSet();
 
       while(resultSet.next()) {
-        User followee = userDAO.get(new User(resultSet.getInt("")));
-
-        users.add(followee);
+        User follower = userDAO.get(new User(resultSet.getInt("usr_id")));
+        user.setProfilePic(imageDAO.get(user.getProfilePic()));
+        users.add(follower);
       }
     } catch (Exception ex) {
-      System.err.println("Could not get followees: "+ex.getMessage());
+      System.err.println("Could not get followers: "+ex.getMessage());
       return null;
     }
     return users;

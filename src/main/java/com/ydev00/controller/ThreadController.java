@@ -100,11 +100,7 @@ public class ThreadController {
   public Route getThreadsByUser = (request, response) -> {
     response.type("application.json");
 
-    List<Thrd> thrdList;
-
-    User userTest = gson.fromJson(request.body(), User.class);
-
-    User user = (User)userDAO.getByUsername(userTest);
+    User user = (User)userDAO.getByUsername(new User(request.params(":username")));
 
     if (user == null) {
       response.status(HttpStatus.NOT_FOUND_404);
@@ -113,7 +109,7 @@ public class ThreadController {
     }
 
     ThreadDAO threadDAO = new ThreadDAO(dbConn);
-    thrdList = threadDAO.getByUser(user);
+    List<Thrd> thrdList = threadDAO.getByUser(user);
 
     if (thrdList.isEmpty()) {
       response.status(HttpStatus.NOT_FOUND_404);

@@ -31,21 +31,25 @@ public class Server {
       post("/login", "application.json", userController.login); // done
 
       get("/user/:username/getFollowers", "application.json", userController.getFollowers); // done
-      get("/user/:username/getFollowees", "application.json", userController.getFollowees);
+      get("/user/:username/getFollowees", "application.json", userController.getFollowees); // done
 
       get("/user/:username/t", "application.json", threadController.getThreadsByUser); // done
 
       get("/user/:username", "application.json", userController.getByUsername); // done
-      post("/user/logout", "application.json", userController.logout); // done
+
 
       post("/user/follow", "application.json", userController.follow); // done
       post("/user/unfollow", "application.json", userController.unfollow); // done
+
       put("/user/update", "application.json", userController.update);
 
+
+      post("/user/logout", "application.json", userController.logout); // done
 
       get("/feed", "application.json" , threadController.loadFeed); // maybe done
 
       get("/t/:id", "application.json", threadController.loadThread);
+
       post("/t/new", "application.json", threadController.create); // done
       post("/t/comment", "application.json", threadController.comment);
 

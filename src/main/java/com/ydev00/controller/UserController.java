@@ -286,36 +286,6 @@ public class UserController {
     if(image != null)
       user.setProfilePic(image);
 
-    List<User> followers = relationDAO.getFollowers(user);
-
-    if(followers == null || followers.isEmpty()) {
-      response.status(HttpStatus.FAILED_DEPENDENCY_424);
-      Message message = new Message("Error", "Could not get followers");
-      return gson.toJson(message, Message.class);
-    }
-
-
-    Type type = new TypeToken<ArrayList<User>>(){}.getType();
-    return gson.toJson(followers, type);
-  };
-
-  public Route getFollowees = (request, response) -> {
-    response.type("application.json");
-
-    if(request.headers("auth") == null) {
-      response.status(HttpStatus.FAILED_DEPENDENCY_424);
-      Message message = new Message("Error", "Not logged in");
-      return gson.toJson(message, Message.class);
-    }
-
-    User user = (User) userDAO.getByUsername(request.headers("username"));
-
-    if(user == null || user.getEmail() == null) {
-      response.status(HttpStatus.FAILED_DEPENDENCY_424);
-      Message message = new Message("Error", "User not found");
-      return gson.toJson(message, Message.class);
-    }
-
     List<User> followees = relationDAO.getFollowees(user);
 
     if(followees == null || followees.isEmpty()) {
@@ -326,5 +296,38 @@ public class UserController {
 
     Type type = new TypeToken<ArrayList<User>>(){}.getType();
     return gson.toJson(followees, type);
+  };
+
+  public Route getFollowees = (request, response) -> {
+    response.type("application.json");
+
+    if(!request.headers("auth").equals("true") || request.headers("username") == null){
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "Not logged in");
+      return gson.toJson(message, Message.class);
+    }
+
+    User user = (User) userDAO.getByUsername(new User(request.headers("username")));
+
+    if(user == null || user.getEmail() == null){
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "User not found");
+      return gson.toJson(message, Message.class);
+    }
+
+    Image image = imageDAO.get(user.getProfilePic());
+    if(image != null)
+      user.setProfilePic(image);
+
+    List<User> followers = relationDAO.getFollowers(user);
+
+    if(followers == null || followers.isEmpty()) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "Could not get followers");
+      return gson.toJson(message, Message.class);
+    }
+
+    Type type = new TypeToken<ArrayList<User>>(){}.getType();
+    return gson.toJson(followers, type);
   };
 }
