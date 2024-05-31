@@ -79,6 +79,12 @@ public class ThreadController {
     UserDAO UserDAO = new UserDAO(dbConn);
     User user = (User)UserDAO.getByUsername(new User(request.headers("username")));
 
+    if(user == null) {
+      response.status(HttpStatus.NOT_FOUND_404);
+      Message message = new Message("Error", "User not found");
+      return gson.toJson(message, Message.class);
+    }
+
     List<User> followees = relationDAO.getFollowees(user);
 
     for(User followee : followees) {
@@ -95,7 +101,9 @@ public class ThreadController {
 
     List<Thrd> thrdList;
 
-    User user = (User)userDAO.getByUsername(new User(request.params("username")));
+    User userTest = gson.fromJson(request.body(), User.class);
+
+    User user = (User)userDAO.getByUsername(userTest);
 
     if (user == null) {
       response.status(HttpStatus.NOT_FOUND_404);

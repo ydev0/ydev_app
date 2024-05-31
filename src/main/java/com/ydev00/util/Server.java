@@ -30,33 +30,28 @@ public class Server {
       post("/signup", userController.signup); // done
       post("/login", "application.json", userController.login); // done
 
+      get("/user/getFollowers", "application.json", userController.getFollowers); // done
+      get("/user/getFollowees", "application.json", userController.getFollowees);
 
-      // if it is on /user, it will need a header
-      path("/user", () -> {
-        get("/getFollowers", "application.json", userController.getFollowers); // done
+      get("/user/t", "application.json", threadController.getThreadsByUser); // done
 
-        get("/:username", "application.json", userController.getByUsername); // done
-        post("/logout", "application.json", userController.logout); // done
+      get("/user/:username", "application.json", userController.getByUsername); // done
+      post("/user/logout", "application.json", userController.logout); // done
 
-        post("/follow", "application.json", userController.follow); // done
-        post("/unfollow", "application.json", userController.unfollow); // done
-        put("/update", "application.json", userController.update);
-        get("/followees", "application.json", userController.getFollowees);
+      post("/user/follow", "application.json", userController.follow); // done
+      post("/user/unfollow", "application.json", userController.unfollow); // done
+      put("/user/update", "application.json", userController.update);
 
-        get("/:username/t", "application.json", threadController.getThreadsByUser);
-      });
 
-      path("/home", () -> {
-        get("/feed", "application.json" , threadController.loadFeed); // maybe done
+      get("/feed", "application.json" , threadController.loadFeed); // maybe done
 
-        path("/t", () -> {
-          get("/:id", "application.json", threadController.loadThread);
-          get("/loadByUser", "application.json", threadController.loadByUser);
-          post("/new", "application.json", threadController.create); // done
-          post("/comment", "application.json", threadController.comment);
-          post("/like", "application.json", userController.like);
-          post("/unlike", "application.json", userController.unlike);
-        });
+      path("/t", () -> {
+        get("/:id", "application.json", threadController.loadThread);
+        post("/new", "application.json", threadController.create); // done
+        post("/comment", "application.json", threadController.comment);
+
+        post("/like", "application.json", userController.like);
+        post("/unlike", "application.json", userController.unlike);
       });
 
       path("/mod", () -> {
@@ -68,7 +63,7 @@ public class Server {
       });
 
       if(dbConn != null)
-      System.out.println("[Server Connected]");
+        System.out.println("[Server Connected]");
     } catch (Exception ex) {
       System.err.println("Server could not start. Error: " + ex.getMessage());
     }
