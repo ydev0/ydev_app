@@ -212,7 +212,7 @@ public class ThreadController {
       return gson.toJson(message, Message.class);
     }
 
-    if(relationDAO.link(thrd, new Thrd(Integer.parseInt(request.params("id"))))) {
+    if(relationDAO.link(new Thrd(Integer.parseInt(request.params("id"))), thrd)) {
       response.status(HttpStatus.OK_200);
       return gson.toJson(thrd, Thrd.class);
     }

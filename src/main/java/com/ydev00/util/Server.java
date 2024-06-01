@@ -54,11 +54,14 @@ public class Server {
 
       post("/t/comment/:id", "application.json", threadController.comment); // done
 
-      post("/t/like", "application.json", userController.like);
+      post("/t/like", "application.json", userController.like); // done
+
       post("/t/unlike", "application.json", userController.unlike);
 
       delete("/delete/user", "application.json", modUserController.deleteUser);
+
       delete("/delete/thread", "application.json", modUserController.deletePost);
+
 
       if(dbConn != null)
         System.out.println("[Server Connected]");
