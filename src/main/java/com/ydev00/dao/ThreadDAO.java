@@ -24,7 +24,11 @@ public class ThreadDAO implements DAO{
   public Object create(Object obj) {
     Thrd thrd = (Thrd) obj;
     try {
-      query = "insert into thread (text, usr_id, article_id) values (?, ?, ?); ";
+
+      if(thrd.getArticle() != null)
+        query = "insert into thread (text, usr_id, article_id) values (?, ?, ?); ";
+      else
+        query = "insert into thread (text, usr_id) values (?, ?); ";
 
       statement = dbConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
       statement.setString(1, thrd.getText());
@@ -36,10 +40,6 @@ public class ThreadDAO implements DAO{
         thrd.setArticle(article);
         statement.setInt(3, thrd.getArticle().getId());
         System.out.println("Article created");
-      }
-      else {
-        statement.setInt(3, 0);
-        System.out.println("Article not created");
       }
         
 

@@ -11,9 +11,12 @@ import com.ydev00.model.thread.Thrd;
 import com.ydev00.model.image.Image;
 import com.ydev00.dao.ImageDAO;
 import com.ydev00.dao.ThreadDAO;
+import com.ydev00.dao.RelationDAO;
 import com.ydev00.dao.UserDAO;
 
 import java.sql.Connection;
+import java.util.List;
+import java.util.ArrayList;
 
 public class ModUserController {
   private Gson gson;
@@ -37,8 +40,19 @@ public class ModUserController {
     }
 
     Thrd thrd = gson.fromJson(request.body(), Thrd.class);
-
     ThreadDAO threadDAO = new ThreadDAO(dbConn);
+
+
+    thrd = (Thrd) threadDAO.get(thrd);
+
+
+    RelationDAO relationDAO = new RelationDAO(dbConn);
+    List<Thrd> assocThreads = new ArrayList<>();
+    assocThreads.addAll(relationDAO.getLinkedThreads(thrd));
+
+    for(Thrd t : assocThreads) {
+      threadDAO.delete(t);
+    }
 
     thrd = (Thrd) threadDAO.delete(thrd);
 
