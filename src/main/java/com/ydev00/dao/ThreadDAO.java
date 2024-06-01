@@ -63,13 +63,14 @@ public class ThreadDAO implements DAO{
       query = "select * from thread where id = ?";
       statement = dbConn.prepareStatement(query);
       statement.setInt(1, thread.getId());
-      resultSet = statement.executeQuery();
+      statement.execute();
+      resultSet = statement.getResultSet(); 
 
       while(resultSet.next()) {
         thread.setId(resultSet.getInt("id"));
         thread.setText(resultSet.getString("text"));
         UserDAO userDAO = new UserDAO(dbConn);
-        thread.setUser((User) userDAO.get(new User(resultSet.getInt("usr_id"))));
+        thread.setUser(userDAO.get(new User(resultSet.getInt("usr_id"))));
 
         if(resultSet.getInt("article_id")!= 0) {
           ArticleDAO articleDAO = new ArticleDAO(dbConn);
@@ -99,7 +100,7 @@ public class ThreadDAO implements DAO{
         thrd.setId(resultSet.getInt("id"));
         thrd.setText(resultSet.getString("text"));
         UserDAO userDAO = new UserDAO(dbConn);
-        thrd.setUser((User) userDAO.get(new User(resultSet.getInt("usr_id"))));
+        thrd.setUser(userDAO.get(new User(resultSet.getInt("usr_id"))));
 
         if(resultSet.getBlob("content") != null) {
           ArticleDAO articleDAO = new ArticleDAO(dbConn);
@@ -180,12 +181,13 @@ public class ThreadDAO implements DAO{
       query = "delete from thread where id = ?";
       statement = dbConn.prepareStatement(query);
       statement.setInt(1, thrd.getId());
-      resultSet = statement.executeQuery();
+      statement.execute();
+      resultSet = statement.getResultSet();
     } catch (Exception ex) {
-      System.err.println("Thread not found: "+ex.getMessage());
-      return null;
+      System.err.println("Could not delete thread: "+ex.getMessage());
+      return thrd;
     }
-    return thrd;
+    return null;
   }
 
   @Override

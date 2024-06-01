@@ -168,6 +168,21 @@ public class RelationDAO {
     return true;
   }
 
+  public boolean unlink (Thrd main, Thrd assoc) {
+    try {
+      query = "delete from thrd_lst where main_id = ? and assoc_id = ?";
+      statement = dbConn.prepareStatement(query);
+      statement.setInt(1, main.getId());
+      statement.setInt(2, assoc.getId());
+      statement.execute();
+    }
+    catch (Exception ex) {
+      System.err.println("Could not unlink: "+ex.getMessage());
+      return false;
+    }
+    return true;
+  }
+
   public List<Thrd> getLinkedThreads(Thrd thrd) {
     List<Thrd> thrds = new ArrayList<>();
     try {

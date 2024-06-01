@@ -32,7 +32,7 @@ public class ModUserController {
   public Route deletePost = (request, response) -> {
     response.type("application/json");
 
-    ModUser user = (ModUser)userDAO.get(new User(request.headers("username")));
+    ModUser user = (ModUser)userDAO.getByUsername(new ModUser(request.headers("username")));
 
     if(!user.isRoot())  {
       response.status(HttpStatus.FORBIDDEN_403);
@@ -41,23 +41,41 @@ public class ModUserController {
 
     Thrd thrd = gson.fromJson(request.body(), Thrd.class);
     ThreadDAO threadDAO = new ThreadDAO(dbConn);
-
+    thrd.setUser(user);
 
     thrd = (Thrd) threadDAO.get(thrd);
 
+    if (thrd == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "Thread not found");
+      return gson.toJson(message, Message.class);
+    }
 
     RelationDAO relationDAO = new RelationDAO(dbConn);
     List<Thrd> assocThreads = new ArrayList<>();
     assocThreads.addAll(relationDAO.getLinkedThreads(thrd));
-
     for(Thrd t : assocThreads) {
-      threadDAO.delete(t);
+      System.out.println(t.getId());
+    }
+
+    if(assocThreads != null) {
+      for(Thrd t : assocThreads) {
+        relationDAO.unlink(thrd, t);
+        threadDAO.delete(t);
+      }
     }
 
     thrd = (Thrd) threadDAO.delete(thrd);
 
+    if (thrd == null){
+      response.status(HttpStatus.OK_200);
+      Message message = new Message("Success", "Thread deleted");
+      return gson.toJson(message, Message.class);
+    }
 
-    return "carlos";
+    response.status(HttpStatus.INTERNAL_SERVER_ERROR_500);
+    Message message = new Message("Error", "Could not delete thread");
+    return gson.toJson(message, Message.class);
   };
 
   public Route deleteUser = (request, response) -> {
