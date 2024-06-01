@@ -160,7 +160,7 @@ public class ThreadDAO implements DAO{
         thrd.setId(resultSet.getInt("id"));
         thrd.setText(resultSet.getString("text"));
         UserDAO userDAO = new UserDAO(dbConn);
-        thrd.setUser((User) userDAO.get(new User(resultSet.getInt("usr_id"))));
+        thrd.setUser(userDAO.get(new User(resultSet.getInt("usr_id"))));
         if(resultSet.getInt("article_id") != 0) {
           ArticleDAO articleDAO = new ArticleDAO(dbConn);
           Article article = (Article) articleDAO.get(new Article(resultSet.getInt("article_id")));
@@ -178,6 +178,11 @@ public class ThreadDAO implements DAO{
   public Object delete(Object obj) {
     Thrd thrd = (Thrd) obj;
     try {
+      if(thrd.getArticle() != null) {
+        ArticleDAO articleDAO = new ArticleDAO(dbConn);
+        articleDAO.delete(thrd.getArticle());
+      }
+
       query = "delete from thread where id = ?";
       statement = dbConn.prepareStatement(query);
       statement.setInt(1, thrd.getId());

@@ -61,7 +61,15 @@ public class ModUserController {
     if(assocThreads != null) {
       for(Thrd t : assocThreads) {
         relationDAO.unlink(thrd, t);
-        threadDAO.delete(t);
+      }
+    }
+
+    if(assocThreads != null) {
+      for(Thrd t : assocThreads) {
+        Thrd t2 = (Thrd) threadDAO.delete(t);
+        if(t2 == null) {
+          System.out.println("Sucessfully deleted thread");
+        }
       }
     }
 

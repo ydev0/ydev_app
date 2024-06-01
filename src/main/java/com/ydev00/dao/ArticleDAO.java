@@ -58,4 +58,18 @@ public class ArticleDAO {
     }
     return article;
   }
+
+  public Object delete(Object obj) {
+    Article article = (Article) obj;
+    try {
+      query = "delete from article where id = ?";
+      statement = dbConn.prepareStatement(query);
+      statement.setInt(1, article.getId());
+      statement.execute();
+    } catch (Exception ex) {
+      System.err.println("Could not delete article: "+ex.getMessage());
+      return null;
+    }
+    return article;
+  }
 }
