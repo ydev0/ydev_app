@@ -64,15 +64,6 @@ public class ModUserController {
       }
     }
 
-    if(assocThreads != null) {
-      for(Thrd t : assocThreads) {
-        Thrd t2 = (Thrd) threadDAO.delete(t);
-        if(t2 == null) {
-          System.out.println("Sucessfully deleted thread");
-        }
-      }
-    }
-
     thrd = (Thrd) threadDAO.delete(thrd);
 
     if (thrd == null){

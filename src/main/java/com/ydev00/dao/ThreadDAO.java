@@ -178,16 +178,24 @@ public class ThreadDAO implements DAO{
   public Object delete(Object obj) {
     Thrd thrd = (Thrd) obj;
     try {
-      if(thrd.getArticle() != null) {
-        ArticleDAO articleDAO = new ArticleDAO(dbConn);
-        articleDAO.delete(thrd.getArticle());
-      }
+
+      query = "delete from thrd_lst where assoc_id = ?;";
+      PreparedStatement deleteThrdLstsStatement = dbConn.prepareStatement(query);
+      deleteThrdLstsStatement.setInt(1, thrd.getId());
+      deleteThrdLstsStatement.executeUpdate();
+
 
       query = "delete from thread where id = ?";
-      statement = dbConn.prepareStatement(query);
+      statement = dbConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
       statement.setInt(1, thrd.getId());
       statement.execute();
-      resultSet = statement.getResultSet();
+
+      if(thrd.getArticle() != null) {
+        ArticleDAO articleDAO = new ArticleDAO(dbConn);
+        Article article = (Article) articleDAO.delete(thrd.getArticle());
+        if(article == null)
+          thrd.setArticle(null);
+      }
     } catch (Exception ex) {
       System.err.println("Could not delete thread: "+ex.getMessage());
       return thrd;
