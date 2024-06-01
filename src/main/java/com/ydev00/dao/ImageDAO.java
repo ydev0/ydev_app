@@ -105,11 +105,11 @@ public class ImageDAO implements DAO{
       statement = dbConn.prepareStatement(query);
       statement.setInt(1, image.getId());
       statement.execute();
-      return true;
     } catch (Exception ex) {
       System.err.println("Image not deleted: "+ex.getMessage());
-      return false;
-    }
+    } 
+    
+    return image;
   }
 
   @Override

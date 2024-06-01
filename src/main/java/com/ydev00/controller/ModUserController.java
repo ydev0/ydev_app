@@ -8,6 +8,8 @@ import spark.Route;
 
 import com.ydev00.model.user.User;
 import com.ydev00.model.thread.Thrd;
+import com.ydev00.model.image.Image;
+import com.ydev00.dao.ImageDAO;
 import com.ydev00.dao.ThreadDAO;
 import com.ydev00.dao.UserDAO;
 
@@ -47,28 +49,33 @@ public class ModUserController {
   public Route deleteUser = (request, response) -> {
     response.type("application/json");
 
-    ModUser root = (ModUser)userDAO.get(new User(request.headers("username")));
+    ModUser root = (ModUser)userDAO.getByUsername(new ModUser(request.headers("username")));
 
     if(!root.isRoot())  {
       response.status(HttpStatus.FORBIDDEN_403);
-      return "Forbidden";
+      Message message = new Message("Error", "Forbidden");
+      return gson.toJson(message, Message.class);
     }
 
     User user = gson.fromJson(request.body(), User.class);
+    user = (User) userDAO.getByUsername(user);
 
-    userDAO = new UserDAO(dbConn);
-    user= userDAO.get(user);
-
-    if(user == null) {
-      response.status(404);
-      return "User not found";
+    if(user == null || user.getProfilePic() == null) {
+      response.status(HttpStatus.FAILED_DEPENDENCY_424);
+      Message message = new Message("Error", "User not found");
+      return gson.toJson(message, Message.class); 
     }
+
+    ImageDAO imageDAO = new ImageDAO(dbConn);
+    Image image = imageDAO.get(user.getProfilePic());
+    user.setProfilePic(image);
 
     user = (User) userDAO.delete(user);
 
     if (user == null){
       response.status(HttpStatus.OK_200);
-      return gson.toJson(user);
+      Message message = new Message("Success", "User deleted");
+      return gson.toJson(message, Message.class);
     }
 
     response.status(HttpStatus.INTERNAL_SERVER_ERROR_500);

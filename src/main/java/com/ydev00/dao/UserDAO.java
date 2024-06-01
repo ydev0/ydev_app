@@ -71,6 +71,7 @@ public class UserDAO implements DAO{
         statement.setInt(1, user.getId());
         System.out.println("Getting user by id");
       }
+
       statement.execute();
       resultSet = statement.getResultSet();
 
@@ -92,8 +93,7 @@ public class UserDAO implements DAO{
     return user;
   }
 
-  public Object getByUsername(Object obj) {
-    User user =  (User) obj;
+  public <T extends User> Object getByUsername(T user) {
     try {
       query = "SELECT * FROM user WHERE username= ?;";
 
@@ -148,7 +148,7 @@ public class UserDAO implements DAO{
   public Object delete(Object obj) {
     User user = (User) obj;
     try {
-      user = get(user);
+      user = (User) getByUsername(user);
 
       if (user == null) {
         throw new Exception("User not found");
@@ -160,7 +160,7 @@ public class UserDAO implements DAO{
         user.setProfilePic(null);
 
       query = "delete from user where id = ?";
-      statement = dbConn.prepareStatement(query);
+      statement = dbConn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
       statement.setInt(1, user.getId());
       statement.execute();
       resultSet = statement.getGeneratedKeys();
