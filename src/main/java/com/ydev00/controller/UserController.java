@@ -201,7 +201,7 @@ public class UserController {
   public Route like = (request, response) -> {
     response.type("application.json");
 
-    if (request.headers("auth") == null) {
+    if (request.headers("auth") == null || request.headers("username") == null ){
       response.status(HttpStatus.FAILED_DEPENDENCY_424);
       Message message = new Message("Error", "Not logged in");
       return gson.toJson(message, Message.class);

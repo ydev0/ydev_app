@@ -48,11 +48,11 @@ public class Server {
 
       get("/feed", "application.json" , threadController.loadFeed); // done
 
-      get("/t/:id", "application.json", threadController.loadThread);
+      get("/t/:id", "application.json", threadController.loadThread); // done
 
       post("/t/new", "application.json", threadController.create); // done
 
-      post("/t/comment/:id", "application.json", threadController.comment);
+      post("/t/comment/:id", "application.json", threadController.comment); // done
 
       post("/t/like", "application.json", userController.like);
       post("/t/unlike", "application.json", userController.unlike);
