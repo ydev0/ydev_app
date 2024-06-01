@@ -18,11 +18,13 @@ public class RelationDAO {
   private ResultSet resultSet;
   private UserDAO userDAO;
   private ImageDAO imageDAO;
+  private ThreadDAO threadDAO;
 
   public RelationDAO(Connection dbConn) {
     this.dbConn = dbConn;
     this.userDAO = new UserDAO(dbConn);
     this.imageDAO = new ImageDAO(dbConn);
+    this.threadDAO = new ThreadDAO(dbConn);
   }
 
   public void follow (String usr, String flwr) {
@@ -72,6 +74,7 @@ public class RelationDAO {
     } catch (Exception ex) {
       System.err.println("Could not follow: "+ex.getMessage());
     }
+    System.out.println("Unfollowed");
   }
 
   public List<User> getFollowers (Object obj) {
@@ -177,12 +180,13 @@ public class RelationDAO {
       while (resultSet.next()) {
         Thrd assoc = new Thrd();
         assoc.setId(resultSet.getInt("assoc_id"));
-        assoc = (Thrd) userDAO.get(assoc);
+        assoc = (Thrd) threadDAO.get(assoc);
+        System.out.println(assoc.toString());
         thrds.add(assoc);
       }
     }
     catch (Exception ex) {
-      System.err.println("Could not link: "+ex.getMessage());
+      System.err.println("Could not get linked threads: "+ex.getMessage());
       return null;
     }
     return thrds;

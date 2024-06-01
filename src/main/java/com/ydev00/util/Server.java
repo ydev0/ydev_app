@@ -51,7 +51,8 @@ public class Server {
       get("/t/:id", "application.json", threadController.loadThread);
 
       post("/t/new", "application.json", threadController.create); // done
-      post("/t/comment", "application.json", threadController.comment);
+
+      post("/t/comment/:id", "application.json", threadController.comment);
 
       post("/t/like", "application.json", userController.like);
       post("/t/unlike", "application.json", userController.unlike);

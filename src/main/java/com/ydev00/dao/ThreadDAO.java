@@ -71,7 +71,7 @@ public class ThreadDAO implements DAO{
         UserDAO userDAO = new UserDAO(dbConn);
         thread.setUser((User) userDAO.get(new User(resultSet.getInt("usr_id"))));
 
-        if(resultSet.getString("markdown") != null) {
+        if(resultSet.getInt("article_id")!= 0) {
           ArticleDAO articleDAO = new ArticleDAO(dbConn);
           Article article = (Article) articleDAO.get(new Article(resultSet.getInt("article_id")));
           thread.setArticle(article);
