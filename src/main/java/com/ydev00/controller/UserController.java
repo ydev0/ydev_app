@@ -286,11 +286,11 @@ public class UserController {
     if(image != null)
       user.setProfilePic(image);
 
-    List<User> followees = relationDAO.getFollowees(user);
+    List<User> followees = relationDAO.getFollowers(user);
 
     if(followees == null || followees.isEmpty()) {
       response.status(HttpStatus.FAILED_DEPENDENCY_424);
-      Message message = new Message("Error", "Could not get followees");
+      Message message = new Message("Error", "Could not get followers");
       return gson.toJson(message, Message.class);
     }
 
@@ -319,7 +319,7 @@ public class UserController {
     if(image != null)
       user.setProfilePic(image);
 
-    List<User> followers = relationDAO.getFollowers(user);
+    List<User> followers = relationDAO.getFollowees(user);
 
     if(followers == null || followers.isEmpty()) {
       response.status(HttpStatus.FAILED_DEPENDENCY_424);
