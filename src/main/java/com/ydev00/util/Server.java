@@ -59,7 +59,7 @@ public class Server {
       post("/t/like", "application.json", userController.like); // Dá like em uma thread
       post("/t/unlike", "application.json", userController.unlike); // Remove like de uma thread
       delete("/delete/user/:id", "application.json", modUserController.deleteUser); // Deleta um usuário
-      delete("/delete/t/:id", "application.json", modUserController.deletePost); / Deleta uma thread
+      delete("/delete/t/:id", "application.json", modUserController.deletePost); // Deleta uma thread
 
       // Exibe mensagem de conexão bem-sucedida se a conexão com o banco de dados foi estabelecida
       if(dbConn != null)
