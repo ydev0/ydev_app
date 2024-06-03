@@ -21,6 +21,10 @@ import java.lang.reflect.Type;
 import org.eclipse.jetty.http.HttpStatus;
 import com.google.gson.Gson;
 
+/**
+ * Controlador para operações relacionadas a usuários.
+ * Gerencia as operações de registro, login, obtenção de informações de usuário, seguir e deixar de seguir outros usuários, curtir e descurtir postagens, entre outras.
+ */
 public class UserController {
   private Connection dbConn;
   private Gson gson;
@@ -28,9 +32,16 @@ public class UserController {
   private ImageDAO imageDAO;
   private RelationDAO relationDAO;
 
-
+  /**
+   * Construtor padrão da classe UserController.
+   */
   public UserController() {}
 
+  /**
+   * Construtor da classe UserController.
+   *
+   * @param dbConn A conexão com o banco de dados.
+   */
   public UserController(Connection dbConn) {
     this.dbConn = dbConn;
     this.gson = new Gson();
@@ -39,6 +50,9 @@ public class UserController {
     this.relationDAO = new RelationDAO(dbConn);
   }
 
+  /**
+   * Rota para cadastro de usuário.
+   */
   public Route signup = (request, response) -> {
     response.type("application.json");
 
@@ -64,6 +78,9 @@ public class UserController {
     return gson.toJson(user, User.class);
   };
 
+  /**
+   * Rota para login de usuário.
+   */
   public Route login = (request, response) -> {
     response.type("application.json");
 
@@ -98,6 +115,9 @@ public class UserController {
     return gson.toJson(user, User.class);
   };
 
+  /**
+   * Rota para obter usuário pelo nome de usuário.
+   */
   public Route getByUsername = (request, response) -> {
     response.type("application.json");
 
@@ -118,6 +138,9 @@ public class UserController {
     return gson.toJson(user, User.class);
   };
 
+  /**
+   * Rota para obter todos os usuários.
+   */
   public Route getAll = (request, response) -> {
     response.type("application.json");
 
@@ -133,7 +156,9 @@ public class UserController {
     return gson.toJson(users, type);
   };
 
-
+  /**
+   * Rota para atualizar o perfil do usuário.
+   */
   public Route update = (request, response) -> {
     response.type("application.json");
 
@@ -156,6 +181,9 @@ public class UserController {
     return gson.toJson(user, User.class);
   };
 
+  /**
+   * Rota para um usuário seguir outro usuário.
+   */
   public Route follow = (request, response) -> {
     response.type("application.json");
 
@@ -177,6 +205,9 @@ public class UserController {
     return "Followed user + " + userToFollow.getUsername();
   };
 
+  /**
+   * Rota para um usuário deixar de seguir outro usuário.
+   */
   public Route unfollow = (request, response) -> {
     response.type("application.json");
 
@@ -198,6 +229,9 @@ public class UserController {
     return "Unfollowed user" + userToUnfollow.getUsername();
   };
 
+  /**
+   * Rota para curtir uma thread
+   */
   public Route like = (request, response) -> {
     response.type("application.json");
 
@@ -221,6 +255,9 @@ public class UserController {
     return "Could not like post +" +thrd.getId();
   };
 
+  /**
+   * Rota para descutir alguma thread
+   */
   public Route unlike = (request, response) -> {
     response.type("application.json");
 
@@ -244,6 +281,9 @@ public class UserController {
     return "Could not unlike post +" + thrd.getId();
   };
 
+  /**
+   * Rota para que um usuário deslogue do sistema
+   */
   public Route logout = (request, response) -> {
     response.type("application.json");
 
@@ -265,6 +305,9 @@ public class UserController {
     return gson.toJson(user, User.class);
   };
 
+  /**
+   * Rota para obter os seguidores de um usuário
+   */
   public Route getFollowers = (request, response) -> {
     response.type("application.json");
 
@@ -298,6 +341,9 @@ public class UserController {
     return gson.toJson(followees, type);
   };
 
+  /**
+   * Rota para obter os seguidos de um usuário
+   */
   public Route getFollowees = (request, response) -> {
     response.type("application.json");
 

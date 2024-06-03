@@ -18,17 +18,29 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.ArrayList;
 
+/**
+ * Controlador para operações de modificação de usuários e threads.
+ * Gerencia as operações de exclusão de threads e usuários.
+ */
 public class ModUserController {
   private Gson gson;
   private Connection dbConn;
   private UserDAO userDAO;
 
+  /**
+   * Construtor da classe ModUserController.
+   *
+   * @param dbConn A conexão com o banco de dados.
+   */
   public ModUserController(Connection dbConn) {
     this.dbConn = dbConn;
     this.gson = new Gson();
     this.userDAO = new UserDAO(dbConn);
   }
 
+  /**
+   * Rota para excluir uma postagem (thread).
+   */
   public Route deletePost = (request, response) -> {
     response.type("application/json");
 
@@ -77,6 +89,9 @@ public class ModUserController {
     return gson.toJson(message, Message.class);
   };
 
+  /**
+   * Rota para excluir um usuário.
+   */
   public Route deleteUser = (request, response) -> {
     response.type("application/json");
 

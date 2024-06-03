@@ -11,6 +11,9 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe para operações de acesso a dados relacionadas a relações de usuário.
+ */
 public class RelationDAO {
   private final Connection dbConn;
   private String query;
@@ -27,6 +30,12 @@ public class RelationDAO {
     this.threadDAO = new ThreadDAO(dbConn);
   }
 
+  /**
+   * Segue um usuário.
+   *
+   * @param usr  O nome de usuário que está seguindo.
+   * @param flwr O nome de usuário que está sendo seguido.
+   */
   public void follow (String usr, String flwr) {
     try {
       User user = (User)userDAO.getByUsername(new User(usr));
@@ -53,6 +62,13 @@ public class RelationDAO {
     System.out.println("Followed");
   }
 
+
+  /**
+   * Deixa de seguir um usuário.
+   *
+   * @param usr  O nome de usuário que está deixando de seguir.
+   * @param flwr O nome de usuário que estava sendo seguido.
+   */
   public void unfollow (String usr, String flwr) {
     try {
       User user = (User)userDAO.getByUsername(new User(usr));
@@ -77,6 +93,13 @@ public class RelationDAO {
     System.out.println("Unfollowed");
   }
 
+
+  /**
+   * Obtém os seguidores de um usuário.
+   *
+   * @param obj O objeto User para o qual os seguidores estão sendo obtidos.
+   * @return Uma lista de usuários que seguem o usuário especificado.
+   */
   public List<User> getFollowers (Object obj) {
     User user = (User)obj;
     List<User> users = new ArrayList<>();
@@ -100,6 +123,12 @@ public class RelationDAO {
     return users;
   }
 
+  /**
+   * Obtém os seguidos de um usuário.
+   *
+   * @param obj O objeto User para o qual os usuários seguidos estão sendo obtidos.
+   * @return Uma lista de usuários que são seguidos pelo usuário especificado.
+   */
   public List<User> getFollowees (Object obj) {
     User user = (User)obj;
     List<User> users = new ArrayList<>();
@@ -123,6 +152,13 @@ public class RelationDAO {
     return users;
   }
 
+  /**
+   * Dá um like em uma thread.
+   *
+   * @param thrd a thread qual o like está sendo dado.
+   * @param user O usuário que está dando o like.
+   * @return true se o like foi dado com sucesso, false caso contrário.
+   */
   public boolean like (Thrd thrd, User user) {
     try {
       query = "insert into usr_lk(thrd_id, usr_id) values (?, ?)";
@@ -138,6 +174,13 @@ public class RelationDAO {
     return true;
   }
 
+  /**
+   * Remove um like de uma thread.
+   *
+   * @param thrd A thread do qual o like está sendo removido.
+   * @param user O usuário que está removendo o like.
+   * @return true se o like foi removido com sucesso, false caso contrário.
+   */
   public boolean unlike (Thrd thrd, User user) {
     try {
       query = "delete from usr_lk where thrd_id = ? and usr_id = ?;";
@@ -153,6 +196,13 @@ public class RelationDAO {
     return true;
   }
 
+  /**
+   * Liga duas threads.
+   *
+   * @param main A thread principal ao qual a outra thread será ligada.
+   * @param assoc A thread que será ligada à thread principal.
+   * @return true se as threads foram ligados com sucesso, false caso contrário.
+   */
   public boolean link (Thrd main, Thrd assoc) {
     try {
       query = "insert into thrd_lst(main_id, assoc_id) values (?, ?)";
@@ -168,6 +218,13 @@ public class RelationDAO {
     return true;
   }
 
+  /**
+   * Desliga duas threads que estão ligadas.
+   *
+   * @param main A thread principal do qual a outra thread será desligada.
+   * @param assoc A thread que será desligado da thread principal.
+   * @return true se as threads foram desligadas com sucesso, false caso contrário.
+   */
   public boolean unlink (Thrd main, Thrd assoc) {
     try {
       query = "delete from thrd_lst where main_id = ? and assoc_id = ?";
@@ -183,6 +240,12 @@ public class RelationDAO {
     return true;
   }
 
+  /**
+   * Obtém uma lista de threads ligados a uma thread específico.
+   *
+   * @param thrd A thread para o qual as threads ligadas estão sendo obtidos.
+   * @return Uma lista de threads ligados á thread especificada.
+   */
   public List<Thrd> getLinkedThreads(Thrd thrd) {
     List<Thrd> thrds = new ArrayList<>();
     try {

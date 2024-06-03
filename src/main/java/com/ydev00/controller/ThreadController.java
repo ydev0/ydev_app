@@ -19,6 +19,10 @@ import java.util.ArrayList;
 import java.sql.Connection;
 import org.eclipse.jetty.http.HttpStatus;
 
+/**
+ * Controlador para operações relacionadas a threads.
+ * Gerencia as operações de criação, carregamento e exclusão de threads.
+ */
 public class ThreadController {
   private Connection dbConn;
   private Gson gson;
@@ -26,6 +30,11 @@ public class ThreadController {
   private ThreadDAO threadDAO;
   private RelationDAO relationDAO;
 
+  /**
+   * Construtor da classe ThreadController.
+   *
+   * @param dbConn A conexão com o banco de dados.
+   */
   public ThreadController(Connection dbConn) {
     this.dbConn = dbConn;
     this.gson = new Gson();
@@ -34,6 +43,9 @@ public class ThreadController {
     this.relationDAO = new RelationDAO(dbConn);
   }
 
+  /**
+   * Rota para criar uma nova thread.
+   */
   public Route create = (request, response) -> {
     response.type("application.json");
 
@@ -68,6 +80,9 @@ public class ThreadController {
     return gson.toJson(thrd, Thrd.class);
   };
 
+  /**
+   * Rota para carregar o feed de threads do usuário.
+   */
   public Route loadFeed = (request, response) -> {
     response.type("application.json");
 
@@ -99,6 +114,9 @@ public class ThreadController {
     return gson.toJson(feed);
   };
 
+  /**
+   * Rota para carregar as threads de um usuário específico.
+   */
   public Route getThreadsByUser = (request, response) -> {
     response.type("application.json");
 
@@ -123,6 +141,9 @@ public class ThreadController {
     return gson.toJson(thrdList);
   };
 
+  /**
+   * Rota para carregar as threads de um usuário específico.
+   */
   public Route loadByUser = (request, response) -> {
     response.type("application.json");
 
@@ -152,6 +173,9 @@ public class ThreadController {
     return gson.toJson(thrdList);
   };
 
+  /**
+   * Rota para carregar uma thread específica.
+   */
   public Route loadThread = (request, response) -> {
     response.type("application.json");
 

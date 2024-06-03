@@ -6,6 +6,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+/**
+ * Classe para operações de acesso a dados relacionadas a artigos.
+ */
 public class ArticleDAO {
   private Connection dbConn;
   private String query;
@@ -19,6 +22,12 @@ public class ArticleDAO {
     this.dbConn = dbConn;
   }
 
+  /**
+   * Método para criar um novo artigo.
+   *
+   * @param obj O artigo a ser criado.
+   * @return O artigo criado.
+   */
   public Object create(Object obj) {
     Article article = (Article) obj;
     try {
@@ -39,6 +48,12 @@ public class ArticleDAO {
     return article;
   }
 
+  /**
+   * Método para obter um artigo pelo seu ID.
+   *
+   * @param obj O artigo a ser obtido.
+   * @return O artigo encontrado.
+   */
   public Object get(Object obj) {
     Article article = (Article) obj;
     try {
@@ -59,6 +74,12 @@ public class ArticleDAO {
     return article;
   }
 
+  /**
+   * Método para excluir um artigo pelo seu ID.
+   *
+   * @param obj O artigo a ser excluído.
+   * @return O artigo excluído.
+   */
   public Object delete(Object obj) {
     Article article = (Article) obj;
     try {

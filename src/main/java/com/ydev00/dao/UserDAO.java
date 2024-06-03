@@ -8,6 +8,9 @@ import java.sql.*;
 
 import java.util.*;
 
+/**
+ * Classe para operações de acesso a dados relacionadas a usuários.
+ */
 public class UserDAO implements DAO{
   private final Connection dbConn;
   private String query;
@@ -17,6 +20,13 @@ public class UserDAO implements DAO{
   public UserDAO(Connection dbConn) {
     this.dbConn = dbConn;
   }
+
+  /**
+   * Cria um novo usuário no banco de dados.
+   *
+   * @param obj O objeto representando o usuário a ser criado.
+   * @return O objeto User criado.
+   */
   public User create(Object obj) {
     User user = (User) obj;
     ImageDAO imageDAO = new ImageDAO(dbConn);
@@ -51,12 +61,19 @@ public class UserDAO implements DAO{
     return List.of();
   }
 
+
   @Override
   public Object get(Object obj) {
     return null;
   }
 
-
+  /**
+   * Obtém um usuário do banco de dados com base no ID ou no email fornecido.
+   *
+   * @param obj O objeto contendo o ID ou email do usuário a ser obtido.
+   * @return O objeto User obtido.
+   * @throws SQLException Se ocorrer um erro durante a execução da consulta SQL.
+   */
   public <T extends UserAbstract> T get(T user) throws SQLException {
     try {
       if(user.getEmail() != null) {
@@ -93,6 +110,12 @@ public class UserDAO implements DAO{
     return user;
   }
 
+  /**
+   * Obtém um usuário do banco de dados com base no nome de usuário fornecido.
+   *
+   * @param user O objeto User contendo o nome de usuário a ser obtido.
+   * @return O objeto User obtido.
+   */
   public <T extends User> Object getByUsername(T user) {
     try {
       query = "SELECT * FROM user WHERE username = ?;";
@@ -118,6 +141,11 @@ public class UserDAO implements DAO{
     return user;
   }
 
+  /**
+   * Lista todos os usuários do banco de dados.
+   *
+   * @return Uma lista de objetos User representando todos os usuários no banco de dados.
+   */
   public List<User> listUsers(){
     List<User> users = new ArrayList<>();
     try {
@@ -144,6 +172,12 @@ public class UserDAO implements DAO{
     return users;
   }
 
+  /**
+   * Exclui um usuário do banco de dados.
+   *
+   * @param obj O objeto User a ser excluído.
+   * @return Sempre retorna null, pois o método não está configurado para retornar um objeto após a exclusão.
+   */
   @Override
   public Object delete(Object obj) {
     User user = (User) obj;

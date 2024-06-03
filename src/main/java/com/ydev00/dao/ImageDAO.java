@@ -7,16 +7,26 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe para operações de acesso a dados relacionadas a imagens.
+ */
 public class ImageDAO implements DAO{
   private Connection dbConn;
   private String query;
   private PreparedStatement statement ;
   private ResultSet resultSet;
 
+
   public ImageDAO(Connection dbConn) {
     this.dbConn = dbConn;
   }
 
+  /**
+   * Cria uma nova entrada de imagem no banco de dados.
+   *
+   * @param obj O objeto Image a ser criado.
+   * @return O objeto Image criado.
+   */
   @Override
   public Image create(Object obj) {
     Image image = (Image) obj;
@@ -48,6 +58,12 @@ public class ImageDAO implements DAO{
     return image;
   }
 
+  /**
+   * Obtém uma imagem do banco de dados com base no ID fornecido.
+   *
+   * @param obj O objeto Image com o ID da imagem a ser obtida.
+   * @return O objeto Image obtido.
+   */
   @Override
   public Image get(Object obj){
     Image image = (Image) obj;
@@ -73,6 +89,11 @@ public class ImageDAO implements DAO{
     return null;
   }
 
+  /**
+   * Obtém todas as imagens presentes no banco de dados.
+   *
+   * @return Uma lista contendo todas as imagens encontradas.
+   */
   @Override
   public List<?> getAll() {
     List<Image> images = new ArrayList<>();
@@ -97,6 +118,12 @@ public class ImageDAO implements DAO{
     return images;
   }
 
+  /**
+   * Exclui uma imagem do banco de dados com base no objeto Image fornecido.
+   *
+   * @param obj O objeto Image a ser excluído.
+   * @return O objeto Image excluído.
+   */
   @Override
   public Object delete(Object obj) {
     Image image = (Image) obj;
@@ -111,6 +138,12 @@ public class ImageDAO implements DAO{
     return image;
   }
 
+  /**
+   * Método de atualização não implementado para a classe ImageDAO.
+   *
+   * @param obj O objeto Image a ser atualizado.
+   * @return Sempre retorna null, pois a atualização não é suportada.
+   */
   @Override
   public Object update(Object obj) {
     return null;

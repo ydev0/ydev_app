@@ -1,16 +1,24 @@
 package com.ydev00.util;
 
-import java.sql.*; 
+import java.sql.*;
 
+/**
+ * Classe para gerenciar a conexão com o servidor de banco de dados MySQL.
+ */
 public class DBServer {
   private Connection conn;
 
+  /**
+   * Construtor da classe DBServer. Tenta estabelecer uma conexão com o banco de dados MySQL.
+   * Se a conexão falhar, tentará novamente até atingir o número máximo de tentativas (5).
+   * Em caso de falha permanente, o programa será encerrado.
+   */
   public DBServer() {
     int retries = 5;
     while (retries > 0) {
       try {
-        // conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ydev_db?" + "user=root&password=password");
-        conn = DriverManager.getConnection("jdbc:mysql://ydev_db:3306/ydev_db?" + "user=root&password=password");
+        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ydev_db?" + "user=root&password=password");
+        // conn = DriverManager.getConnection("jdbc:mysql://ydev_db:3306/ydev_db?" + "user=root&password=password");
         break;
       } catch (SQLException ex) {
         retries--;

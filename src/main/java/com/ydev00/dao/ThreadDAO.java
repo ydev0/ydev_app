@@ -10,6 +10,9 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe para operações de acesso a dados relacionadas a thread.
+ */
 public class ThreadDAO implements DAO{
   private final Connection dbConn;
   private String query;
@@ -20,6 +23,12 @@ public class ThreadDAO implements DAO{
     this.dbConn = dbConn;
   }
 
+  /**
+   * Cria uma nova thread no banco de dados.
+   *
+   * @param obj O objeto representando a thread a ser criado.
+   * @return O objeto Thrd criado.
+   */
   @Override
   public Object create(Object obj) {
     Thrd thrd = (Thrd) obj;
@@ -56,6 +65,12 @@ public class ThreadDAO implements DAO{
     return thrd;
   }
 
+  /**
+   * Obtém uma thread do banco de dados com base no ID fornecido.
+   *
+   * @param obj O objeto contendo o ID da thread a ser obtido.
+   * @return O objeto Thrd obtido.
+   */
   @Override
   public Object get(Object obj) {
     Thrd thread = (Thrd) obj;
@@ -85,6 +100,11 @@ public class ThreadDAO implements DAO{
     return thread;
   }
 
+  /**
+   * Obtém uma lista de todas as threads do banco de dados.
+   *
+   * @return Uma lista de objetos Thrd representando todas as threads no banco de dados.
+   */
   @Override
   public List<Thrd> getAll() {
     List<Thrd> thrdList = new ArrayList<>();
@@ -116,6 +136,12 @@ public class ThreadDAO implements DAO{
     return thrdList;
   }
 
+  /**
+   * Obtém uma lista de threadss associadas a um usuário específico.
+   *
+   * @param user O usuário para o qual as threads associadas estão sendo obtidos.
+   * @return Uma lista de objetos Thrd representando as threads associadas ao usuário.
+   */
   public List<Thrd> getByUser(User user) {
     List<Thrd> thrdList = new ArrayList<>();
     try {
@@ -146,6 +172,14 @@ public class ThreadDAO implements DAO{
     return thrdList;
   }
 
+
+  /**
+   * Obtém uma lista de threadss associadas a um usuário específico com um limite máximo de resultados.
+   *
+   * @param user O usuário para o qual as threads associadas estão sendo obtidos.
+   * @param max  O número máximo de resultados a serem retornados.
+   * @return Uma lista de objetos Thrd representando as threads associadas ao usuário, com um limite máximo de resultados.
+   */
   public List<Thrd> getByUser(User user, int max) {
     List<Thrd> thrdList = new ArrayList<>();
     try {
@@ -174,6 +208,12 @@ public class ThreadDAO implements DAO{
     return thrdList;
   }
 
+  /**
+   * Exclui uma thread do banco de dados.
+   *
+   * @param obj O objeto Thrd a ser excluído.
+   * @return O objeto Thrd excluído.
+   */
   @Override
   public Object delete(Object obj) {
     Thrd thrd = (Thrd) obj;

@@ -1,5 +1,8 @@
 package com.ydev00.util;
 
+/**
+ * Classe para representar uma mensagem com um tipo associado.
+ */
 public class Message {
   private String message;
   private String type;
