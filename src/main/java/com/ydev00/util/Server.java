@@ -58,9 +58,9 @@ public class Server {
 
       post("/t/unlike", "application.json", userController.unlike); // done
 
-      delete("/delete/user", "application.json", modUserController.deleteUser); // done
+      delete("/delete/user/:id", "application.json", modUserController.deleteUser); // done
 
-      delete("/delete/thread", "application.json", modUserController.deletePost); // ongoing
+      delete("/delete/t/:id", "application.json", modUserController.deletePost); // ongoing
 
 
       if(dbConn != null)

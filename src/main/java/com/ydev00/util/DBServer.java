@@ -9,7 +9,8 @@ public class DBServer {
     int retries = 5;
     while (retries > 0) {
       try {
-        conn = DriverManager.getConnection("jdbc:mysql://ydev_db:3306/ydev_db?" + "user=root&password=password");
+        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ydev_db?" + "user=root&password=password");
+        // conn = DriverManager.getConnection("jdbc:mysql://ydev_db:3306/ydev_db?" + "user=root&password=password");
         break;
       } catch (SQLException ex) {
         retries--;

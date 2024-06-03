@@ -87,7 +87,7 @@ public class ThreadController {
       return gson.toJson(message, Message.class);
     }
 
-    List<User> followees = relationDAO.getFollowees(user);
+    List<User> followees = relationDAO.getFollowers(user);
 
     for(User followee : followees) {
       feed.addAll(threadDAO.getByUser(followee, 25));

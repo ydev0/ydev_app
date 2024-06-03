@@ -7,7 +7,7 @@ RUN mvn dependency:go-offline
 
 COPY src /workdir/server/src
 
-  RUN mvn --batch-mode clean compile assembly:single
+RUN mvn --batch-mode clean compile assembly:single
 
 FROM build AS dev-envs
 

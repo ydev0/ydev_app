@@ -39,7 +39,7 @@ public class ModUserController {
       return "Forbidden";
     }
 
-    Thrd thrd = gson.fromJson(request.body(), Thrd.class);
+    Thrd thrd = new Thrd(Integer.parseInt(request.params(":id")));
     ThreadDAO threadDAO = new ThreadDAO(dbConn);
     thrd.setUser(user);
 
@@ -88,7 +88,7 @@ public class ModUserController {
       return gson.toJson(message, Message.class);
     }
 
-    User user = gson.fromJson(request.body(), User.class);
+    User user = new User(Integer.parseInt(request.params(":id")));
     user = (User) userDAO.getByUsername(user);
 
     if(user == null || user.getProfilePic() == null) {

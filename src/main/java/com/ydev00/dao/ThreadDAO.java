@@ -200,7 +200,9 @@ public class ThreadDAO implements DAO{
       System.err.println("Could not delete thread: "+ex.getMessage());
       return thrd;
     }
-    return null;
+
+    thrd = null;
+    return thrd;
   }
 
   @Override

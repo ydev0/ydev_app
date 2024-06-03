@@ -95,7 +95,7 @@ public class UserDAO implements DAO{
 
   public <T extends User> Object getByUsername(T user) {
     try {
-      query = "SELECT * FROM user WHERE username= ?;";
+      query = "SELECT * FROM user WHERE username = ?;";
 
       statement = dbConn.prepareStatement(query);
       statement.setString(1, user.getUsername());
