@@ -2,7 +2,7 @@
 ydev backend microservice, wrote in java with maven as build tool
 
 ---
-clone the <a href="https://github.com/ydev0/ydev">Main Repo</a> ,<a href="https://github.com/ydev0/ydev_db"> and use the docker-compose.yml to run all of them
+clone the <a href="https://github.com/ydev0/ydev">Main Repo</a> ,<a href="https://github.com/ydev0/ydev_db">ydev_db</a> and use the docker-compose.yml to run all of them
 
 - `docker compose build`
 - `docker compose up -d`
